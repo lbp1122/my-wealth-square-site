@@ -1,0 +1,25 @@
+{
+  "name": "My Wealth Square",
+  "short_name": "Wealth Square",
+  "description": "See your wealth clearly, monitor progress and explore retirement scenarios in one structured personal-finance system.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff2a8",
+  "theme_color": "#f8d54b",
+  "icons": [
+    {
+      "src": "./app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
