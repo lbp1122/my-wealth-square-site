@@ -1,0 +1,63 @@
+name: MWS Kokoro TTS
+
+on:
+  push:
+    paths:
+      - ".github/workflows/mws-kokoro-tts.yml"
+      - "tools/tts-script.txt"
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq espeak-ng ffmpeg
+          python -m pip install --upgrade pip
+          python -m pip install "kokoro>=0.9.4" "misaki[en]" soundfile
+
+      - name: Generate MWS voice
+        run: |
+          cat > /tmp/generate.py <<'PY'
+          from kokoro import KPipeline
+          import numpy as np
+          import soundfile as sf
+          import subprocess
+          from pathlib import Path
+
+          text = Path("tools/tts-script.txt").read_text(encoding="utf-8").strip()
+          pipeline = KPipeline(lang_code="a")
+          chunks = []
+          for _, _, audio in pipeline(text, voice="am_michael", speed=0.96):
+              chunks.append(np.asarray(audio, dtype=np.float32))
+          if not chunks:
+              raise RuntimeError("No audio generated")
+          audio = np.concatenate(chunks)
+          sf.write("mws_voice.wav", audio, 24000)
+          subprocess.run([
+              "ffmpeg","-y","-loglevel","error","-i","mws_voice.wav",
+              "-codec:a","libmp3lame","-q:a","2","mws_voice.mp3"
+          ], check=True)
+          print("Generated mws_voice.mp3")
+          PY
+          python /tmp/generate.py
+
+      - name: Upload audio
+        uses: actions/upload-artifact@v4
+        with:
+          name: mws-kokoro-voice
+          path: |
+            mws_voice.mp3
+            mws_voice.wav
+          retention-days: 7
