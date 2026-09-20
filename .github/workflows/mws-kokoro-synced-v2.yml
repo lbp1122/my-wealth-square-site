@@ -1,0 +1,70 @@
+name: MWS Kokoro Synced Voice V2
+
+on:
+  push:
+    paths:
+      - ".github/workflows/mws-kokoro-synced-v2.yml"
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq espeak-ng ffmpeg
+          python -m pip install --upgrade pip
+          python -m pip install "kokoro>=0.9.4" "misaki[en]" soundfile
+      - name: Generate synced British male voice
+        run: |
+          cat > /tmp/gen.py <<'PY'
+          from kokoro import KPipeline
+          import numpy as np, soundfile as sf, subprocess
+
+          sr = 24000
+          pipe = KPipeline(lang_code='b')
+          voice = 'bm_george'
+          speed = 0.90
+
+          scenes = [
+              (0.25, "You know your bank balance."),
+              (2.45, "But do you know your true wealth?"),
+              (5.05, "Assets minus liabilities shows what you really own."),
+              (10.70, "My Wealth Square brings the whole picture together."),
+              (13.55, "See your wealth. Shape your freedom.")
+          ]
+
+          total = np.zeros(int(sr*16.2), dtype=np.float32)
+
+          def synth(text):
+              chunks=[]
+              for _,_,audio in pipe(text, voice=voice, speed=speed):
+                  chunks.append(np.asarray(audio,dtype=np.float32))
+              return np.concatenate(chunks)
+
+          for start,text in scenes:
+              a=synth(text)
+              s=int(start*sr)
+              e=min(len(total), s+len(a))
+              total[s:e] += a[:e-s]
+
+          total=np.clip(total,-0.95,0.95)
+          sf.write("mws_voice_synced.wav", total, sr)
+          subprocess.run([
+              "ffmpeg","-y","-loglevel","error","-i","mws_voice_synced.wav",
+              "-codec:a","libmp3lame","-q:a","2","mws_voice_synced.mp3"
+          ],check=True)
+          print("done")
+          PY
+          python /tmp/gen.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mws-kokoro-synced-v2
+          path: |
+            mws_voice_synced.mp3
+            mws_voice_synced.wav
+          retention-days: 7
