@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head>
+<head><link rel="icon" href="./assets/mws-approved-logo.jpg" type="image/jpeg">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="google-site-verification" content="MlHco7fYLUif7n3JPSiI1gh4e2xzQkcpK6tDUPB565c" />
@@ -13,17 +13,7 @@
 <header class="topbar">
   <div class="wrap nav">
     <a class="brand" href="./" aria-label="My Wealth Square home">
-      <svg viewBox="0 0 108 108" aria-hidden="true">
-        <rect x="2" y="2" width="104" height="104" rx="24" fill="#246FFC"/>
-        <rect x="20" y="20" width="68" height="68" rx="11" fill="#FFE36B" stroke="#062B68" stroke-width="4"/>
-        <path fill="#FFF0A0" d="M37 33H53V75H37C34.2 75 32 72.8 32 70V38C32 35.2 34.2 33 37 33Z"/>
-        <path fill="#45DCC9" d="M56 33H71C73.8 33 76 35.2 76 38V53H56Z"/>
-        <path fill="#1855D6" d="M56 56H76V70C76 72.8 73.8 75 71 75H56Z"/>
-        <path d="M38 31H70C74.4 31 78 34.6 78 39V69C78 73.4 74.4 77 70 77H38C33.6 77 30 73.4 30 69V39C30 34.6 33.6 31 38 31Z" fill="none" stroke="#062B68" stroke-width="4"/>
-        <path d="M54 31V77M54 54H78" fill="none" stroke="#062B68" stroke-width="4"/>
-        <circle cx="44" cy="45" r="5" fill="#062B68"/>
-        <path d="M39 63H49" fill="none" stroke="#062B68" stroke-width="4" stroke-linecap="round"/>
-      </svg>
+      <img src="./assets/mws-approved-logo.jpg" alt="" width="48" height="48">
       <span>My Wealth Square</span>
     </a>
     <nav class="links">
@@ -32,11 +22,7 @@
       <a href="#features" data-k="navFeatures">Features</a>
       <a href="#download" data-k="navDownload">Get the app</a>
     </nav>
-    <div class="langs" aria-label="Language">
-      <button type="button" data-lang="en" class="active">EN</button>
-      <button type="button" data-lang="bm">BM</button>
-      <button type="button" data-lang="zh">中文</button>
-    </div>
+    <label class="language"><span class="sr-only">Language</span><select id="language" aria-label="Language"><option value="en">English</option><option value="bm">Bahasa Melayu</option><option value="zh">简体中文</option><option value="zh-TW">繁體中文</option><option value="th">ไทย</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="vi">Tiếng Việt</option></select></label>
   </div>
 </header>
 
@@ -53,7 +39,7 @@
       </div>
       <p class="note" data-k="websiteOnly">This website explains the concept. Enter financial figures and run calculations inside the Android app.</p>
     </div>
-    <div class="visual-card" aria-label="Balance sheet square concept">
+    <div class="visual-card" aria-label="Balance sheet square concept"><div class="visual-heading"><img src="./assets/mws-approved-logo.jpg" alt="" width="36" height="36"><span>My Wealth Square</span></div>
       <div class="square">
         <div class="assets"><strong data-k="assets">Assets</strong><small data-k="assetsNote">What you own</small></div>
         <div class="right">
@@ -61,7 +47,7 @@
           <div class="equity"><strong data-k="equity">Equity</strong><small data-k="equityNote">What remains</small></div>
         </div>
       </div>
-      <div class="formula" data-k="formula">Assets = Liabilities + Equity</div>
+      <p class="concept-label" data-k="diagram">Your wealth, in perspective · Concept illustration</p><div class="formula" data-k="formula">Assets = Liabilities + Equity</div>
     </div>
   </div>
 </section>
@@ -138,9 +124,9 @@
     <div class="section-head"><div class="kicker" data-k="plansKicker">START FREE</div><h2 data-k="plansTitle">One app. Free first. Full Version when you need more.</h2><p data-k="plansBody">Users begin with free features and may unlock Full access through the offers currently available in Google Play. Available plans, local prices and renewal terms are shown before purchase.</p></div>
     <div class="plans">
       <article><div class="tag" data-k="freeLabel">FREE</div><h3 data-k="freeTitle">Understand where you stand</h3><p data-k="freeBody">Build your Wealth Square, review your financial position and try the planning workflow with free-edition limits.</p></article>
-      <article class="full"><div class="tag" data-k="fullLabel">FULL VERSION</div><h3 data-k="fullTitle">Go deeper with your plan</h3><p data-k="fullBody">Unlock Full access through Annual Full Access or a one-time Full Version purchase when those offers are available to you in Google Play.</p></article>
+      <article class="full"><div class="tag" data-k="fullLabel">FULL VERSION</div><h3 data-k="fullTitle">Go deeper with your plan</h3><p data-k="fullBody">Unlock Full access through the offers available to you in Google Play.</p></article>
     </div>
-    <p class="note"><span data-k="plansLegal">Prices, taxes, eligibility and renewal terms are shown by Google Play. A one-time Full purchase has no recurring fee, but does not guarantee perpetual updates, future-device compatibility or indefinite platform availability. Applicable consumer rights remain unaffected.</span> <a href="./terms.html" data-k="termsLink">Terms of Use</a>.</p>
+    <p class="purchase-note"><span data-k="plansLegal">A one-time Full Version purchase has no recurring subscription fee. It does not guarantee perpetual development, updates, future compatibility or continued third-party service availability. Applicable consumer rights remain unaffected.</span> <a href="./terms.html#one-time-purchase" data-k="terms">Terms of Use</a>.</p>
   </div>
 </section>
 
@@ -150,12 +136,13 @@
 </main>
 
 <footer>
-  <div class="wrap footer-row"><strong>My Wealth Square</strong><span data-k="footerText">Educational personal wealth and retirement-planning tool.</span><div><a href="./terms.html">Terms</a><a href="./privacy.html">Privacy</a><a href="./support.html">Support</a></div></div>
+  <div class="wrap footer-row"><strong>My Wealth Square</strong><span data-k="footerText">Educational personal wealth and retirement-planning tool.</span><div><a href="./privacy.html" data-k="navPrivacy">Privacy</a><a href="./terms.html" data-k="terms">Terms</a><a href="./support.html" data-k="support">Support</a></div></div>
   <div class="wrap copyright">
-    <p>© 2026 Looi Boon Ping. All rights reserved.</p>
-    <p>My Wealth Square, its software, visual designs, documentation, reports and proprietary financial-modelling materials may not be copied, reproduced, modified, distributed or commercially exploited without written permission.</p>
+    <p>© 2026 Looi Boon Ping. <span data-k="rights">All rights reserved.</span></p>
+    <p data-k="copyright">My Wealth Square, its software, visual designs, documentation, reports and proprietary financial-modelling materials may not be copied, reproduced, modified, distributed or commercially exploited without written permission.</p>
   </div>
 </footer>
-<script src="./site.js"></script>
+<script src="./copy.js"></script><script src="./site.js"></script>
 </body>
 </html>
+
