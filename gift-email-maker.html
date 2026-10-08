@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Wealth Square — Gift Email Maker</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#19314f}*{box-sizing:border-box}body{background:#eff2f6;margin:0;padding:18px}main{max-width:720px;margin:0 auto}h1{font-size:24px;margin:5px 0 7px;color:#15345f}p{line-height:1.48}label{display:block;font-weight:700;margin:15px 0 6px}input,textarea{border:1px solid #9aabba;border-radius:9px;padding:12px;font:16px Arial;width:100%;background:white;color:#132845}input:focus,textarea:focus{outline:2px solid #d5af67}button{border:0;border-radius:8px;padding:13px 15px;background:#103767;color:#fff;font-weight:bold;font-size:15px;cursor:pointer}button.gold{background:#936a22}button.pale{background:#dae3ee;color:#153451}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 8px}.buttons button{flex:1 1 180px}#ready{padding:12px;border-radius:8px;background:#fae4c7;color:#593d1b;font-weight:700;margin:12px 0}#ready.ok{background:#d8eee1;color:#1c583a}#status{display:none;padding:13px;background:#daebff;border-left:5px solid #2368a6;margin:10px 0 18px;font-weight:700;line-height:1.45}#status.show{display:block}.hint{font-size:14px;color:#415b74}.small{font-size:13px;color:#53697c}#emailPreview{background:#fff;border-radius:10px;padding:12px;box-shadow:0 1px 10px #cdd4db;user-select:text;-webkit-user-select:text}#emailPreview:focus{outline:2px solid #e4b55a}#manual{border:2px solid #c18a3f;padding:12px;background:#fff9eb;border-radius:9px;display:none;margin:16px 0}#manual.show{display:block}.topbar{background:#112e53;border-radius:10px;padding:16px;color:#eff5ff;margin:0 0 15px}.topbar p{margin:6px 0 0;color:#cfe0f5}a{color:#215b9d}h2{margin-top:20px}strong{overflow-wrap:anywhere}
+</style></head><body><main>
+<header class="topbar"><h1 style="color:#ffe0a0;margin:0">My Wealth Square Gift Email</h1><p>Personalize and send a gift card directly inside your email. No PNG attachment required.</p></header>
+<div id="ready">Checking browser support… If this message never changes, open this file in Chrome instead of a document preview.</div>
+<label for="recipient">Recipient's name</label><input id="recipient" placeholder="Friend's name" autocomplete="off">
+<label for="sender">Sender's name (you or your family)</label><input id="sender" placeholder="Gift from" autocomplete="off">
+<label for="promo">Unique Google Play promo code</label><input id="promo" placeholder="Paste an UNUSED code" autocomplete="off" spellcheck="false" autocapitalize="off">
+<div class="buttons"><button type="button" id="copyCard">Copy designed gift card</button><button type="button" id="copyCode" class="gold">Copy promo code</button><button type="button" id="openEmail" class="pale">Open email with text</button></div>
+<div id="status" role="status" aria-live="polite"></div>
+<div id="manual"><b>Manual copying is available:</b><p>Tap the preview below, select the gift card, choose Copy, then paste into your email. On a computer you can also use Ctrl+C after pressing Select Gift Card.</p><button type="button" id="selectCard">Select gift card</button></div>
+<p class="hint"><b>To send a styled email:</b> Tap <b>Copy designed gift card</b> → open Gmail in your browser → compose an email → paste into the message body. Some mobile email apps remove formatting. If that happens, use <b>Open email with text</b> (always readable and copyable).</p>
+<h2>Preview — this is what friends will see</h2>
+<div id="emailPreview" tabindex="0">
+<table role="presentation" width="100%" style="border:2px solid #dbba72;background:#081e3d;color:#fff;font:16px Arial, sans-serif"><tr><td style="text-align:center;padding:25px;color:#ffe0a0;font-size:26px"><b>My Wealth Square</b></td></tr><tr><td style="text-align:center;padding:25px">A PERSONAL FULL VERSION GIFT<br><br>Enter details above to personalize.</td></tr></table>
+</div>
+<h2>Text version (always selectable)</h2><textarea id="plain" rows="10" readonly aria-label="Copyable plain-text gift email">A Personal Gift — My Wealth Square Full Version</textarea>
+<p class="small">Privacy: this editor does not transmit or store names or promo codes. Every field stays in the browser. Each code must be genuine and unused.</p>
+</main><script>
+(function(){
+'use strict';
+const APP='https://play.google.com/store/apps/details?id=com.lbp.balancesheetsquare';
+const LOGO='https://lbp1122.github.io/my-wealth-square-site/assets/mws-approved-logo.jpg';
+const PLAY='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png';
+const el=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+const vals=()=>({recipient:el('recipient').value.trim()||'[RECIPIENT NAME]',sender:el('sender').value.trim()||'[SENDER NAME]',code:el('promo').value.trim()||'[PROMO CODE]'});
+function richHTML(){
+ const v=vals(), to=esc(v.recipient),from=esc(v.sender),code=esc(v.code);
+ return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;max-width:620px;margin:0 auto;background:#091f3e;border:2px solid #dfbb72;border-radius:14px;color:#fff;font-family:Arial,Helvetica,sans-serif"><tr><td align="center" style="padding:22px 15px 4px"><img src="${LOGO}" width="92" height="92" alt="MWS" style="width:92px;height:92px;border-radius:18px;border:1px solid #d9b16a"></td></tr><tr><td align="center" style="color:#fff;font-size:30px;font-weight:bold;padding:12px 8px 5px">My Wealth Square</td></tr><tr><td align="center" style="color:#efd091;font-size:13px;letter-spacing:1px;padding:2px 12px">AN EXCLUSIVE PERSONAL GIFT</td></tr><tr><td align="center" style="font:bold 44px Georgia,serif;color:#ffdc8a;padding:15px 5px 4px">Full Version</td></tr><tr><td align="center" style="font:bold 16px Arial;color:#f5d28b;padding:8px 8px 10px">RM499.99 VALUE &nbsp;•&nbsp; ONE-TIME UNLOCK</td></tr><tr><td align="center" style="color:#d7e7fa;font:16px Arial;padding:8px 10px 18px">See your wealth. Shape your freedom.</td></tr><tr><td align="center" style="color:#ffdc8a;font-weight:bold;font-size:17px;padding:5px 10px 19px">✦ COMPLIMENTARY ACCESS ✦</td></tr><tr><td style="padding:0 18px"><table role="presentation" width="100%" style="width:100%;background:#fff9ed;border:1px solid #e1c07d;border-radius:8px"><tr><td align="center" style="color:#34475d;font-size:12px;letter-spacing:1px;padding:17px 8px 3px">PREPARED ESPECIALLY FOR</td></tr><tr><td align="center" style="color:#102944;font-size:25px;font-weight:bold;padding:6px 10px 17px;overflow-wrap:anywhere">${to}</td></tr></table></td></tr><tr><td style="padding:14px 18px 0"><table role="presentation" width="100%" style="width:100%;background:#fff9ed;border:1px solid #e1c07d;border-radius:8px"><tr><td align="center" style="color:#334b66;font-size:12px;padding:17px 8px 4px">YOUR GOOGLE PLAY PROMO CODE</td></tr><tr><td align="center" style="color:#112c50;font-size:22px;font-weight:bold;padding:5px 8px 19px;overflow-wrap:anywhere;user-select:text">${code}</td></tr></table></td></tr><tr><td align="center" style="padding:16px 15px 4px;color:#f7d58f;font-size:14px">DOWNLOAD NOW ON</td></tr><tr><td align="center" style="padding:2px 12px 10px"><a href="${APP}" target="_blank" style="display:inline-block;color:#fff;text-decoration:underline;font-size:17px;font-weight:bold"><img src="${PLAY}" alt="Get it on Google Play" width="206" style="display:block;width:206px;max-width:100%;border:0"><span style="display:block;color:#e9d2a4;font-size:12px;margin-top:3px">Tap here to open My Wealth Square on Google Play</span></a></td></tr><tr><td align="center" style="font-size:13px;color:#d9e4f4;padding:8px 12px 14px">Install the app, choose Full Version, and redeem this code at Google Play checkout.</td></tr><tr><td align="center" style="color:#ffdd8f;padding:15px 10px 25px;font-size:16px">A personal gift from <b>${from}</b></td></tr></table><p style="font:15px Arial,Helvetica,sans-serif;color:#24374b;margin:15px auto;max-width:620px">Copyable promotional code: <b>${code}</b><br><a href="${APP}">Download My Wealth Square on Google Play</a></p>`;
+}
+function plainText(){const v=vals();return `🎁 A Personal Gift — My Wealth Square Full Version
+
+Dear ${v.recipient},
+
+I am delighted to share a gift of complimentary access to My Wealth Square Full Version (RM499.99 value).
+
+Your Google Play promo code:
+${v.code}
+
+Download My Wealth Square:
+${APP}
+
+Open the app, select Full Version and redeem the promo code through Google Play checkout.
+
+A personal gift from ${v.sender}`;}
+function update(){el('emailPreview').innerHTML=richHTML();el('plain').value=plainText();}
+function show(s,kind='info'){const o=el('status');o.textContent=s;o.className='show';o.style.borderLeftColor=kind==='error'?'#b44931':'#2368a6';o.scrollIntoView({block:'nearest',behavior:'smooth'});}
+function selectPreview(){const p=el('emailPreview'),range=document.createRange(),sel=window.getSelection();p.focus();range.selectNodeContents(p);sel.removeAllRanges();sel.addRange(range);}
+function legacyCopySelection(){try{selectPreview();const success=document.execCommand('copy');window.getSelection()?.removeAllRanges();return !!success;}catch(e){return false;}}
+function legacyCopyText(text){const ta=document.createElement('textarea');ta.value=text;ta.readOnly=true;ta.setAttribute('aria-hidden','true');ta.style.cssText='position:fixed;top:20px;left:10px;opacity:0.001;width:100px;height:20px';document.body.appendChild(ta);ta.focus();ta.select();let ok=false;try{ok=document.execCommand('copy');}catch(e){}ta.remove();return !!ok;}
+function manualCopy(){el('manual').classList.add('show');show('Copying is blocked here. Select the gift card below and copy it manually, or use Open email with text.','error');}
+// Use legacy selection during a direct click, BEFORE any asynchronous permission attempt.
+el('copyCard').addEventListener('click',function(){update();show('Copying your formatted gift card…');
+  if(legacyCopySelection()){show('✓ Formatted card copied. Now paste it into Gmail’s message body.');return;}
+  if(navigator.clipboard && window.ClipboardItem && window.isSecureContext){
+    const rich=richHTML(),plain=plainText();
+    navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([rich],{type:'text/html'}),'text/plain':new Blob([plain],{type:'text/plain'})})]).then(()=>show('✓ Formatted gift card copied. Paste into Gmail.')).catch(()=>manualCopy());
+  }else manualCopy();
+});
+el('copyCode').addEventListener('click',function(){const c=el('promo').value.trim();if(!c){show('Please enter a real promotional code first.','error');el('promo').focus();return;}
+if(legacyCopyText(c)){show('✓ Promotional code copied.');return;}
+if(navigator.clipboard && window.isSecureContext){navigator.clipboard.writeText(c).then(()=>show('✓ Promotional code copied.')).catch(()=>{el('promo').focus();el('promo').select();show('Clipboard is blocked. Your code is selected: choose Copy from the phone menu.','error');});}
+else{el('promo').focus();el('promo').select();show('Your code is selected. Choose Copy from the phone menu.','error');}
+});
+el('selectCard').addEventListener('click',function(){selectPreview();show('Gift card selected. Press Ctrl+C or tap Copy on the selection menu.');});
+el('openEmail').addEventListener('click',function(){const subj='A personal gift for you — My Wealth Square Full Version';const body=plainText();const href='mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);show('Opening your email app with a copyable code and a working Play Store link…');window.location.href=href;});
+for(const id of ['recipient','sender','promo']) el(id).addEventListener('input',update);
+update();el('ready').className='ok';el('ready').textContent='✓ Editor ready — live preview is working. Your details stay on this device.';
+})();
+</script></body></html>
