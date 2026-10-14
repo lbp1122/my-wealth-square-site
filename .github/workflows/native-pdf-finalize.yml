@@ -31,5 +31,6 @@ jobs:
           git add examples/mws-native-age-*-usd-20261014-v2.pdf examples/previews/native-age-*-v2.png
           if ! git diff --cached --quiet; then
             git commit -m 'docs(site): publish verified native-style MWS PDF reports v2'
+            git pull --rebase origin main
             git push
           fi
