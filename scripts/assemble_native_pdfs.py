@@ -6,8 +6,8 @@ import fitz
 root=Path(__file__).resolve().parents[1]
 partdir=root/'examples/native-parts'
 expected={
- 50:('4c870519e50eafcdc96fd6a3d58a5f5e51b53a3b89f066372b3c2a19c8134d3a',6608213),
- 25:('fd8514209a2a6fb9cbe23db2914aa9415d95b8fc3eda2da00d2999f781c0cd22',6802841)}
+ 50:('e3c68507e9bf4fa4453cd3fa836a4119d84c8346c3827203bcb6310275fde0bb',6608213),
+ 25:('bf69e6289f3e10049ad2f34ed0fb352c589d759230f96aaa4039198bd6996e10',6802841)}
 for age,(checksum,length) in expected.items():
  pieces=sorted(partdir.glob(f'age-{age}-*.b64'))
  assert len(pieces)==10
