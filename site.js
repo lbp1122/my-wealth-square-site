@@ -5,6 +5,17 @@
     en: 'English', bm: 'Bahasa Melayu', zh: '简体中文', 'zh-TW': '繁體中文',
     th: 'ไทย', ja: '日本語', ko: '한국어', vi: 'Tiếng Việt',
   };
+  // Short visual mobile labels; the complete translated labels remain accessible.
+  const mobileNav = {
+    en:['Why','Concept','Features','PDFs','Get app'],
+    bm:['Kenapa','Konsep','Ciri','PDF','Muat turun'],
+    zh:['原因','理念','功能','PDF','下载'],
+    'zh-TW':['原因','理念','功能','PDF','下載'],
+    th:['เหตุผล','แนวคิด','ฟีเจอร์','PDF','ติดตั้ง'],
+    ja:['理由','概念','機能','PDF','入手'],
+    ko:['이유','개념','기능','PDF','받기'],
+    vi:['Vì sao','Ý tưởng','Tính năng','PDF','Tải app']
+  };
   const validLanguage = lang => Object.hasOwn(languageNames, lang);
   const select = document.getElementById('language');
   document.documentElement.setAttribute('translate', 'no');
@@ -13,6 +24,10 @@
   function setLang(lang) {
     if (!validLanguage(lang)) lang = 'en';
     const selected = copy[lang];
+    document.querySelectorAll('.nav .links a').forEach((el,index)=>{
+      el.setAttribute('data-mobile-label', mobileNav[lang]?.[index] || '');
+    });
+
     document.documentElement.lang = {bm: 'ms', zh: 'zh-CN'}[lang] || lang;
     document.querySelectorAll('[data-k]').forEach(el => {
       const value = selected[el.dataset.k];
