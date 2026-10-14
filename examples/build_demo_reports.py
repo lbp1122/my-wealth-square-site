@@ -214,6 +214,8 @@ def create(p):
   worth=assets-debtsum;delta=((worth-original)/abs(original)*100) if original else 0
   rr.append([date,rm(assets),rm(debtsum),rm(worth),'{:+.1f}%'.format(delta)])
  story.append(tab(rr,[w*.18,w*.20,w*.20,w*.23,w*.19],4))
+ story.append(P('Two-year progress chart (USD)','H2Sample'))
+ story.append(ProgressTrend(p['progress'],w))
  story.append(P('Financial Life - input assumptions','H2Sample'))
  inp=[['INPUT','VALUE','INPUT','VALUE'],
       ['Age now',str(age),'Plan to age','90'],
