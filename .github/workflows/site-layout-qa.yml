@@ -1,0 +1,37 @@
+name: Site layout QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'sample-reports.html'
+      - 'styles.css'
+      - 'copy.js'
+      - 'site.js'
+      - 'qa/**'
+      - '.github/workflows/site-layout-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium for browser checks
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.0
+          npx playwright install --with-deps chromium
+      - name: Audit mobile and desktop layouts in eight languages
+        run: node qa/layout-audit.mjs
+      - name: Save Malay mobile QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mws-site-qa-screenshots
+          path: qa/screenshots/
+          if-no-files-found: ignore
