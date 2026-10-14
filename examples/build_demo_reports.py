@@ -72,11 +72,13 @@ profiles=[
      assets=older_assets,debts=older_debts,progress=oldprogress,retire=62,access=59,
      salary=26000,passive=3800,spend=13500,retireSpend=15500,inflation=2.75,cashReturn=3.1,
      invReturn=5.5,epfReturn=5.0,salaryGrowth=2.0,passiveGrowth=1.0,
+     spendingChanges=[(55,12500,'Planned work-life budget'),(62,15500,'Retirement budget'),(72,13800,'Planned lifestyle adjustment')],
      events=[(56,'Addition',150000,'Illustrative gift'),(61,'Withdrawal',200000,'Renovation'),(66,'Withdrawal',85000,'Vehicle replacement')]),
  dict(age=25,name='Maya Lim',gender='Female',dob='2001-03-18',job='Early-career designer',
      assets=young_assets,debts=young_debts,progress=youngprogress,retire=65,access=59,
      salary=7200,passive=220,spend=3700,retireSpend=6500,inflation=2.75,cashReturn=2.8,
      invReturn=6.0,epfReturn=5.0,salaryGrowth=3.0,passiveGrowth=2.0,
+     spendingChanges=[(30,4600,'Expected household changes'),(45,5600,'Planned family budget'),(65,6500,'Retirement living budget')],
      events=[(27,'Withdrawal',15000,'Professional course'),(35,'Withdrawal',50000,'Possible home deposit'),(44,'Addition',25000,'Illustrative cash gift')])
 ]
 class WealthSquare(Flowable):
@@ -92,13 +94,16 @@ class WealthSquare(Flowable):
   c.drawCentredString(w*0.75,max(16,(h-debth)/2),'NET WORTH '+rm(self.a-self.d))
 
 def totals(d):return sum(v for rows in d.values() for _,v in rows)
-def project(p):
+def project(p,return_adjustment=0):
  cash=sum(v for _,v in p['assets']['cash']);invest=sum(v for _,v in p['assets']['investments'])
  epf=sum(v for _,v in p['assets']['retirement']);output=[]
  for age in range(p['age'],91):
   work=age<p['retire'];salary=p['salary']*(1+p['salaryGrowth']/100)**(age-p['age']) if work else 0
   passive=p['passive']*(1+p['passiveGrowth']/100)**(age-p['age'])
-  spend=(p['spend'] if work else p['retireSpend'])*(1+p['inflation']/100)**(age-p['age'])
+  revised_spend=p['spend'] if work else p['retireSpend']
+  for change_age,new_amount,_ in p['spendingChanges']:
+   if change_age<=age:revised_spend=new_amount
+  spend=revised_spend*(1+p['inflation']/100)**(age-p['age'])
   cprev=cash;iprev=invest;eprev=epf;epfIn=0;eventsIn=0;eventsOut=0
   for month in range(1,13):
    worker=salary*0.06;employer=salary*0.04;epfIn+=worker+employer
@@ -111,9 +116,9 @@ def project(p):
    if invest<0 and age>=p['access']:epf+=invest;invest=0
    if invest<0:invest=0
    epf=max(0,epf)
-   cash*=(1+p['cashReturn']/100)**(1/12)
-   invest*=(1+p['invReturn']/100)**(1/12)
-   epf*=(1+p['epfReturn']/100)**(1/12)
+   cash*=(1+(p['cashReturn']+return_adjustment)/100)**(1/12)
+   invest*=(1+(p['invReturn']+return_adjustment)/100)**(1/12)
+   epf*=(1+(p['epfReturn']+return_adjustment)/100)**(1/12)
   output.append([str(age),rm((salary+passive)*12),rm(spend*12),rm(epfIn),rm(cash),rm(invest),rm(epf),rm(cash+invest+epf)])
  return output
 
@@ -151,7 +156,12 @@ def create(p):
    rr=[['HOLDING','AMOUNT','DETAILS (ALL FICTIONAL)']]
    for idx,(name,value) in enumerate(items,1):
     ref='DEMO-'+str(age)+'-'+key.upper()+'-'+str(idx).zfill(2)
-    extra='Valuation / outstanding amount; US dollars; example reference '+ref+'; Source: fictional provider '+str(idx)
+    extra='Valuation / outstanding amount; USD; reference '+ref+'; FICTIONAL RECORD ONLY'
+    if key=='cash':
+     institutions=['Northstar Example Bank (fictional)','Blue Oak Demonstration Bank (fictional)','Maple Fiction Trust (fictional)']
+     extra='Institution: '+institutions[(idx-1)%3]+'; Account holder: '+p['name']+'; Account number: DEMO-'+str(age)+'-CASH-'+str(idx).zfill(3)+'-USD; Currency: USD; Account: '+name+'; NOT A REAL ACCOUNT'
+    if key=='retirement':extra+='; Fictional plan account: DEMO-PLAN-'+str(age)+'-'+str(idx).zfill(3)
+    if key=='investments':extra+='; Fictional broker: Example Securities; Account: DEMO-BROKER-'+str(age)+'-'+str(idx).zfill(3)
     if key=='property':extra+='; demo title DEMO-TITLE-'+str(idx)
     if key=='vehicles':extra+='; demo registration DEMO-VEH-'+str(idx)
     if key=='privateInvestments':extra+='; ownership / book value, not liquid cash'
@@ -178,11 +188,21 @@ def create(p):
       ['Employee retirement contributions', '6% salary','Employer retirement contributions','4% salary'],
       ['One-off events',str(len(p['events'])),'Yearly return overrides','None']]
  story.append(tab(inp,[w*.28,w*.22,w*.28,w*.22],4))
+ story.append(P('Planned future spending changes','H2Sample'))
+ story.append(tab([['AGE','NEW MONTHLY SPENDING','REASON']]+[[str(aa),rm(v),reason] for aa,v,reason in p['spendingChanges']],[w*.12,w*.3,w*.58],4))
  story.append(P('One-time money events','H2Sample'))
  story.append(tab([['AGE','DIRECTION','US$ AMOUNT','PURPOSE']]+[[str(aa),kind,rm(value),desc] for aa,kind,value,desc in p['events']],[w*.12,w*.20,w*.22,w*.46],4))
+ story.append(P('3 x 3 sensitivity: spending x investment returns at age 90','H2Sample'))
+ sensitivity=[['MONTHLY SPENDING','RETURNS -1pp','BASE RETURNS','RETURNS +1pp']]
+ for factor,label in [(0.9,'10% below base'),(1.0,'Base spending'),(1.1,'10% above base')]:
+  pp=dict(p);pp['spend']=p['spend']*factor;pp['retireSpend']=p['retireSpend']*factor
+  pp['spendingChanges']=[(year,monthly*factor,reason) for year,monthly,reason in p['spendingChanges']]
+  sensitivity.append([label]+[project(pp,delta)[-1][-1] for delta in [-1,0,1]])
+ story.append(tab(sensitivity,[w*.25]*4,4))
+ story.append(P('Nine illustrative combinations of spending and annual returns. Values show cash + investments + retirement accounts at age 90, not total net worth. A zero end balance is not a guarantee of funding sufficiency.'))
  story.append(P('Annual Financial Life illustration through age 90','H2Sample'))
- story.append(P('These numbers illustrate the presentation only; they are not generated by the current MWS Financial Life calculation engine. Nominal US$, after hypothetical return / contribution / spending assumptions. Houses and vehicles are not counted as spendable funds.'))
- projections=[['AGE','INCOME / YEAR','SPEND / YEAR','Retirement ADDITIONS','END CASH','END SHARES','END Retirement','LIQUID + Retirement']]
+ story.append(P('These numbers illustrate the presentation only; they are not generated by the current MWS Financial Life calculation engine. Nominal USD, after hypothetical return / contribution / spending assumptions. Houses and vehicles are not counted as spendable funds.'))
+ projections=[['AGE','INCOME / YEAR','SPEND / YEAR','RETIREMENT ADDITIONS','END CASH','END SHARES','END RETIREMENT','LIQUID + RETIREMENT']]
  projections+=project(p)
  story.append(tab(projections,[w*.055,w*.15,w*.15,w*.135,w*.12,w*.12,w*.115,w*.155],3))
  story.append(Spacer(1,14));story.append(P('Password-protected sharing','H2Sample'))
