@@ -7,14 +7,14 @@
   };
   // Short visual mobile labels; the complete translated labels remain accessible.
   const mobileNav = {
-    en:['Why','Concept','Features','PDFs','Get app'],
-    bm:['Kenapa','Konsep','Ciri','PDF','Aplikasi'],
-    zh:['原因','理念','功能','PDF','下载'],
-    'zh-TW':['原因','理念','功能','PDF','下載'],
-    th:['เหตุผล','แนวคิด','ฟีเจอร์','PDF','ติดตั้ง'],
-    ja:['理由','概念','機能','PDF','入手'],
-    ko:['이유','개념','기능','PDF','받기'],
-    vi:['Vì sao','Ý tưởng','Tính năng','PDF','Tải app']
+    en:['Why','Concept','Features','PDF Sample'],
+    bm:['Kenapa','Konsep','Ciri','Contoh PDF'],
+    zh:['原因','理念','功能','PDF示例'],
+    'zh-TW':['原因','理念','功能','PDF範例'],
+    th:['เหตุผล','แนวคิด','ฟีเจอร์','ตัวอย่าง PDF'],
+    ja:['理由','概念','機能','PDF見本'],
+    ko:['이유','개념','기능','PDF 예시'],
+    vi:['Vì sao','Ý tưởng','Tính năng','Mẫu PDF']
   };
   const validLanguage = lang => Object.hasOwn(languageNames, lang);
   const select = document.getElementById('language');
