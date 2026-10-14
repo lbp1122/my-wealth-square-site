@@ -1,0 +1,51 @@
+name: Generate encrypted fictional sample PDFs
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/RUN_DEMO_PDFS'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mws-demo-pdfs
+  cancel-in-progress: true
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install PDF dependencies
+        run: python -m pip install --disable-pip-version-check reportlab==4.4.9 pypdf==5.9.0
+      - name: Generate fictional examples and verify encryption
+        run: |
+          set -euo pipefail
+          python examples/build_demo_reports.py
+          python - <<'PY'
+          from pathlib import Path
+          from pypdf import PdfReader
+          for age, min_assets in ((50, 33),(25, 11)):
+            p=Path(f'examples/mws-demo-age-{age}.pdf')
+            assert p.is_file() and p.stat().st_size>10000
+            r=PdfReader(p)
+            assert r.is_encrypted and r.decrypt('MWS-DEMO-2026')
+            content=' '.join(x.extract_text() or '' for x in r.pages)
+            for token in ['NET WORTH','2024-10-14','2026-10-14','90']:
+              assert token.casefold() in content.casefold(),(age,token)
+            print(age,len(r.pages),p.stat().st_size)
+          PY
+      - name: Publish encrypted sample PDFs in website repository
+        run: |
+          git config user.name 'mws-sample-docs-bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add examples/mws-demo-age-25.pdf examples/mws-demo-age-50.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m 'docs(site): publish protected fictional MWS report examples'
+            git push
+          fi
