@@ -12,7 +12,10 @@ for age,(checksum,length) in expected.items():
  pieces=sorted(partdir.glob(f'age-{age}-*.b64'))
  assert len(pieces)==10
  data=base64.b64decode(''.join(p.read_text().strip() for p in pieces),validate=True)
- assert len(data)==length and hashlib.sha256(data).hexdigest()==checksum
+ actual=hashlib.sha256(data).hexdigest()
+ print(f'CHECK age={age} actualSize={len(data)} expectedSize={length} actualSHA={actual} expectedSHA={checksum}',flush=True)
+ assert len(data)==length,(age,len(data),length)
+ assert actual==checksum,(age,actual,checksum)
  pdf=root/f'examples/mws-native-age-{age}-usd-20261014.pdf'
  pdf.write_bytes(data)
  reader=PdfReader(pdf)
