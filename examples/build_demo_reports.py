@@ -178,6 +178,33 @@ class ProgressTrend(Flowable):
    c.setFillColor(INK);c.setFont('Helvetica',7)
    c.drawString(x+12,4,title)
 
+class ProgressComparison(Flowable):
+ def __init__(self,progress,width):
+  self.progress=progress
+  self.width=width
+  self.height=164
+ def draw(self):
+  c=self.canv;w=self.width
+  start=self.progress[0];end=self.progress[-1]
+  rows=[
+   ('Assets',start[1],end[1],HexColor('#13988d')),
+   ('Liabilities',start[2],end[2],HexColor('#bb4248')),
+   ('Net worth',start[1]-start[2],end[1]-end[2],HexColor('#215da2'))
+  ]
+  maxvalue=max(x for _,a,b,_ in rows for x in (a,b))*1.02
+  left=90;barwidth=w-left-100
+  for index,(name,a,b,color) in enumerate(rows):
+   y=126-48*index
+   c.setFillColor(NAVY);c.setFont('Helvetica-Bold',8);c.drawString(1,y-2,name)
+   c.setFillColor(HexColor('#accbde'));c.rect(left,y,barwidth*a/maxvalue,11,fill=1,stroke=0)
+   c.setFillColor(color);c.rect(left,y-15,barwidth*b/maxvalue,11,fill=1,stroke=0)
+   c.setFillColor(INK);c.setFont('Helvetica',7)
+   c.drawRightString(w-4,y+2,rm(a))
+   c.drawRightString(w-4,y-13,rm(b))
+  c.setFont('Helvetica',7);c.setFillColor(NAVY)
+  c.drawString(left,1,start[0]+' (light bars)')
+  c.drawRightString(w-4,1,end[0]+' (dark bars)')
+
 def totals(d):return sum(v for rows in d.values() for _,v in rows)
 def project(p,return_adjustment=0):
  cash=sum(v for _,v in p['assets']['cash']);invest=sum(v for _,v in p['assets']['investments'])
@@ -240,6 +267,8 @@ def create(p):
  story.append(tab(rr,[w*.18,w*.20,w*.20,w*.23,w*.19],4))
  story.append(P('Two-year progress chart (USD)','H2Sample'))
  story.append(ProgressTrend(p['progress'],w))
+ story.append(P('Start versus end of period','H2Sample'))
+ story.append(ProgressComparison(p['progress'],w))
 
  story.append(PageBreak());story.append(P('Wealth Inventory Report','HeadingSample'))
  story.append(P('USD only. Every institution, person, account identifier and loan reference is invented for this demonstration. Empty categories show US$0.'))
@@ -293,6 +322,8 @@ def create(p):
  story.append(tab([['AGE','NEW MONTHLY SPENDING','REASON']]+[[str(aa),rm(v),reason] for aa,v,reason in p['spendingChanges']],[w*.12,w*.3,w*.58],4))
  story.append(P('One-time money events','H2Sample'))
  story.append(tab([['AGE','DIRECTION','US$ AMOUNT','PURPOSE']]+[[str(aa),kind,rm(value),desc] for aa,kind,value,desc in p['events']],[w*.12,w*.20,w*.22,w*.46],4))
+ story.append(PageBreak())
+ story.append(P('Financial Independence Planning Report','HeadingSample'))
  story.append(P('Financial Life Simulator - 3 x 3','H2Sample'))
  story.append(P('Nine spending / return scenarios for age 90: this is a demonstrative sensitivity table, not the verified MWS simulator.'))
 
