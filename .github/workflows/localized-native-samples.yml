@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: lbp1122/my-wealth-square-v3
-          ref: release/v3.1.2-aab103
+          ref: 9fce54e7c2c0204d2386d3bb7f923e723ca43f78
           path: native-app
           persist-credentials: false
       - uses: actions/setup-node@v4
