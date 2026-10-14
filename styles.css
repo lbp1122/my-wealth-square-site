@@ -33,3 +33,35 @@ html[data-input-mode="pointer"] .language select:focus-visible{outline:none;box-
 }
 .sample-item, .sample-hero { min-width:0; overflow-wrap:break-word; }
 .sample-amount { overflow-wrap:anywhere; }
+
+/* Compact five-item navigation: one row at every mobile width.
+   Full accessible link names remain in the DOM; short localized visual
+   labels keep even Malay, Thai and Vietnamese on a single row. */
+@media (max-width:760px) {
+  .nav .links {
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    width:100%;
+    gap:2px;
+    padding-top:10px;
+    margin:0;
+    flex-wrap:nowrap;
+    align-items:center;
+  }
+  .nav .links a {
+    display:block;
+    min-width:0;
+    overflow:hidden;
+    white-space:nowrap;
+    text-align:center;
+    font-size:0;
+    line-height:1.5;
+    padding:7px 1px;
+    text-overflow:clip;
+  }
+  .nav .links a::after {
+    content:attr(data-mobile-label);
+    font-size:clamp(10px,2.85vw,12px);
+    font-weight:700;
+  }
+}
