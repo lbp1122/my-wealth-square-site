@@ -8,7 +8,7 @@
   // Short visual mobile labels; the complete translated labels remain accessible.
   const mobileNav = {
     en:['Why','Concept','Features','PDFs','Get app'],
-    bm:['Kenapa','Konsep','Ciri','PDF','Muat turun'],
+    bm:['Kenapa','Konsep','Ciri','PDF','Aplikasi'],
     zh:['原因','理念','功能','PDF','下载'],
     'zh-TW':['原因','理念','功能','PDF','下載'],
     th:['เหตุผล','แนวคิด','ฟีเจอร์','PDF','ติดตั้ง'],
