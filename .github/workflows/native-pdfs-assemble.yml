@@ -26,3 +26,4 @@ jobs:
           git rm -r -f examples/native-parts
           git commit -m 'docs(site): publish verified native MWS USD reports'
           git push
+# Rebuild request: validate native encrypted sample PDFs
