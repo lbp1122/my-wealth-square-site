@@ -19,7 +19,7 @@
     .password-tip{padding:18px;background:#fff8e3;border:1px solid #f4db8b;border-radius:14px;margin:22px 0}
     .password-code{font-size:21px;letter-spacing:0.5px;font-weight:800;color:#173654}
     .password-tip button{margin-left:12px;padding:8px 12px;border-radius:8px;border:1px solid #173654;background:white;color:#173654;cursor:pointer}
-    .sample-disclosure{font-size:13px;color:#53677b;line-height:1.7}
+    .native-report-preview{display:block;max-height:440px;width:100%;height:auto;object-fit:contain;object-position:top center;background:#f1f5f9;border:1px solid #dce4ed;border-radius:8px;margin:14px 0}.sample-disclosure{font-size:13px;color:#53677b;line-height:1.7}
     .sample-frame{width:100%;height:680px;border:1px solid #dce4ed;border-radius:14px}
     #viewerCard{display:none;margin-top:24px}
     @media(max-width:700px){.samples-grid{grid-template-columns:1fr}.sample-frame{height:460px}.password-tip button{display:block;margin:12px 0 0}}
@@ -48,25 +48,27 @@
       <div class="kicker" data-k="sampleFiftyAge">AGE 50 · FICTIONAL</div>
       <h2 data-k="sampleFifty">Age 50 — Sample report</h2>
       <div class="sample-amount" data-k="sampleNetWorth50">US$1,000,000 net worth</div>
+      <img class="native-report-preview" src="./examples/previews/native-age-50-cover-v2.png" alt="My Wealth Square native PDF Wealth Square report preview, fictional age 50" loading="lazy" width="477" height="674">
       <p data-k="sampleMeta50">21 asset items · 12 liabilities · 2024–2026 progress · Projection to age 90</p>
-      <div class="sample-actions"><a href="./examples/mws-demo-age-50.pdf" target="_blank" rel="noopener" class="report-open" data-k="sampleOpenPdf">Open encrypted PDF</a><a class="alt" href="./examples/mws-demo-age-50.pdf" download data-k="sampleDownload">Download PDF</a></div>
+      <div class="sample-actions"><a href="./examples/mws-native-age-50-usd-20261014-v2.pdf" target="_blank" rel="noopener" class="report-open" data-k="sampleOpenPdf">Open encrypted PDF</a><a class="alt" href="./examples/mws-native-age-50-usd-20261014-v2.pdf" download data-k="sampleDownload">Download PDF</a></div>
     </article>
     <article class="sample-item">
       <div class="kicker" data-k="sampleTwentyAge">AGE 25 · FICTIONAL</div>
       <h2 data-k="sampleTwenty">Age 25 — Sample report</h2>
       <div class="sample-amount" data-k="sampleNetWorth25">US$50,000 net worth</div>
+      <img class="native-report-preview" src="./examples/previews/native-age-25-cover-v2.png" alt="My Wealth Square native PDF Wealth Square report preview, fictional age 25" loading="lazy" width="477" height="674">
       <p data-k="sampleMeta25">8 asset items · 3 liabilities · 2024–2026 progress · Projection to age 90</p>
-      <div class="sample-actions"><a href="./examples/mws-demo-age-25.pdf" target="_blank" rel="noopener" class="report-open" data-k="sampleOpenPdf">Open encrypted PDF</a><a class="alt" href="./examples/mws-demo-age-25.pdf" download data-k="sampleDownload">Download PDF</a></div>
+      <div class="sample-actions"><a href="./examples/mws-native-age-25-usd-20261014-v2.pdf" target="_blank" rel="noopener" class="report-open" data-k="sampleOpenPdf">Open encrypted PDF</a><a class="alt" href="./examples/mws-native-age-25-usd-20261014-v2.pdf" download data-k="sampleDownload">Download PDF</a></div>
     </article>
   </div>
   <section class="sample-disclosure">
-    <p data-k="sampleDisclaimer1">These are fictional educational demonstrations. The projections currently use a simplified illustration, not the app's verified Financial Life engine. They should not be represented as exact exports from the Android app.</p>
+    <p data-k="sampleDisclaimer1">These fictional samples use the same report format as My Wealth Square's Android PDF export. All people, amounts, financial institutions and account numbers are invented. Projections are illustrative, not financial advice.</p>
     <p data-k="sampleDisclaimer2">These PDFs are encrypted. A compatible PDF reader asks for the password after you open or download the file. The website does not collect any password or financial figures. For your own reports, use a private password and share it separately.</p>
     <p><a class="home-link" href="./index.html" data-k="sampleBack">Back to My Wealth Square</a> · <a href="./privacy.html" data-k="samplePrivacyLink">Privacy Policy</a></p>
   </section>
 </main>
 <footer><div class="wrap footer-row"><strong>My Wealth Square</strong><div><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a><a href="./support.html">Support</a></div><span>© 2026 Looi Boon Ping</span></div></footer>
-<script src="./copy.js"></script><script src="./site.js?v=20261014"></script>
+<script src="./copy.js"></script><script src="./site.js?v=20261014-native-v2"></script>
 <script>
 document.getElementById('copyPassword').addEventListener('click',async(event)=>{
   try { await navigator.clipboard.writeText('MWS-DEMO-2026'); event.currentTarget.textContent='✓'; }
