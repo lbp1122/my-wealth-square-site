@@ -29,9 +29,21 @@ def tab(rows,widths,padding=5):
  ('BOTTOMPADDING',(0,0),(-1,-1),padding),('LEFTPADDING',(0,0),(-1,-1),6),('RIGHTPADDING',(0,0),(-1,-1),5)
  ]));return t
 def bottom(c,d):
- c.saveState();c.setFont('Helvetica',7);c.setFillColor(NAVY)
- c.drawString(16*mm,14*mm,'MY WEALTH SQUARE | FICTIONAL USD REPORT | NO REAL ACCOUNTS')
- c.drawRightString(195*mm,14*mm,str(d.page));c.restoreState()
+ """Use the same visual grammar as the app-export report screenshots."""
+ c.saveState()
+ w,h=A4
+ c.setFillColor(PALE);c.rect(0,0,w,h,stroke=0,fill=1)
+ c.setFillColor(HexColor('#ffdb56'));c.rect(0,0,3*mm,h,stroke=0,fill=1)
+ c.setFillColor(NAVY);c.rect(0,h-35*mm,w,35*mm,stroke=0,fill=1)
+ c.setFillColor(white);c.setFont('Helvetica-Bold',19)
+ c.drawString(17*mm,h-18*mm,'My Wealth Square')
+ c.setFont('Helvetica',8);c.setFillColor(HexColor('#c3d7e6'))
+ c.drawString(17*mm,h-26*mm,'FICTIONAL SAMPLE  |  USD  |  FOR EDUCATIONAL USE')
+ c.setFillColor(white);c.drawRightString(w-15*mm,h-20*mm,str(d.page))
+ c.setFillColor(HexColor('#73889b'));c.setFont('Helvetica',6.5)
+ c.drawString(17*mm,13*mm,'(c) 2026 Looi Boon Ping  |  All identities, banks and account numbers are fictional.')
+ c.drawRightString(w-15*mm,13*mm,'MY WEALTH SQUARE  |  DEMONSTRATION ONLY')
+ c.restoreState()
 
 categories=[
  ('cash','Cash & savings'),('investments','Public investments'),('privateInvestments','Private investments'),
@@ -84,16 +96,47 @@ profiles=[
      events=[(27,'Withdrawal',6000,'Professional course'),(35,'Withdrawal',18000,'Possible home deposit'),(44,'Addition',10000,'Illustrative cash gift')])
 ]
 class WealthSquare(Flowable):
- def __init__(self,assets,debt,width):self.a=assets;self.d=debt;self.width=width;self.height=150
+ """Full-category MWS-style balance-sheet square with a proportional right side."""
+ def __init__(self,assets,debt,width,assetRows=None):
+  self.a=assets;self.d=debt;self.width=width;self.height=258
+  self.assetRows=assetRows or []
  def draw(self):
-  c=self.canv;w=self.width;h=self.height;half=w/2;debth=h*self.d/self.a if self.a else 0
-  c.setStrokeColor(NAVY);c.setFillColor(TEAL);c.rect(0,0,half,h,fill=1,stroke=1)
-  c.setFillColor(GREY);c.rect(half,h-debth,half,debth,fill=1,stroke=1)
-  c.setFillColor(GOLD);c.rect(half,0,half,h-debth,fill=1,stroke=1)
-  c.setFont('Helvetica-Bold',10);c.setFillColor(NAVY);c.drawCentredString(half/2,90,'ASSETS')
-  c.drawCentredString(half/2,70,rm(self.a));c.setFont('Helvetica-Bold',8)
-  c.drawCentredString(w*0.75,h-max(17,debth/2),'LIABILITIES '+rm(self.d))
-  c.drawCentredString(w*0.75,max(16,(h-debth)/2),'NET WORTH '+rm(self.a-self.d))
+  c=self.canv;w=self.width;h=self.height;left=w*0.51;right=w-left
+  base=34;area=h-base
+  ratio=min(1,self.d/self.a) if self.a>0 else 0
+  dh=area*ratio
+  c.setLineWidth(2);c.setStrokeColor(NAVY)
+  c.setFillColor(HexColor('#d5f1f4'));c.rect(0,base,left,area,fill=1,stroke=1)
+  c.setFillColor(HexColor('#e5e9f1'));c.rect(left,base+area-dh,right,dh,fill=1,stroke=1)
+  c.setFillColor(HexColor('#ffdb56'));c.rect(left,base,right,area-dh,fill=1,stroke=1)
+  c.setFillColor(HexColor('#e8f2fc'))
+  c.rect(0,0,left,base,fill=1,stroke=1);c.rect(left,0,right,base,fill=1,stroke=1)
+  c.setFillColor(NAVY);c.setFont('Helvetica-Bold',11)
+  c.drawString(12,base+area-23,'ASSETS')
+  c.drawRightString(left-12,base+area-23,rm(self.a))
+  yy=base+area-48
+  c.setFont('Helvetica',7.1)
+  for title,value in self.assetRows:
+   if yy<base+12:break
+   label=title if len(title)<=25 else title[:23]+'..'
+   c.drawString(12,yy,label)
+   c.setFont('Helvetica-Bold',7.1)
+   c.drawRightString(left-10,yy,rm(value))
+   c.setFont('Helvetica',7.1)
+   c.setStrokeColor(HexColor('#c3d4de'));c.line(12,yy-6,left-10,yy-6)
+   yy-=23
+  c.setFillColor(NAVY);c.setFont('Helvetica-Bold',10)
+  c.drawString(left+10,base+area-23,'LIABILITIES')
+  c.drawRightString(w-8,base+area-42,rm(self.d))
+  c.setFont('Helvetica',8)
+  c.drawString(left+10,base+area-57,'{:.1f}% of assets'.format(100*ratio))
+  if area-dh>=56:
+   c.setFont('Helvetica-Bold',11)
+   c.drawString(left+10,base+area-dh-25,'NET WORTH')
+   c.drawRightString(w-10,base+area-dh-43,rm(self.a-self.d))
+  c.setFillColor(NAVY);c.setFont('Helvetica-Bold',8)
+  c.drawCentredString(left/2,12,'Assets = '+rm(self.a))
+  c.drawCentredString(left+right/2,12,'Liabilities + equity = '+rm(self.a))
 
 class ProgressTrend(Flowable):
  def __init__(self,progress,width):
@@ -167,7 +210,7 @@ def project(p,return_adjustment=0):
 def create(p):
  age=p['age'];filename=BASE/f'mws-demo-age-{age}.pdf';plain=BASE/f'_plain-{age}.pdf'
  doc=SimpleDocTemplate(str(plain),pagesize=A4,leftMargin=16*mm,rightMargin=16*mm,
-                       topMargin=16*mm,bottomMargin=20*mm)
+                       topMargin=44*mm,bottomMargin=23*mm)
  w=A4[0]-32*mm;story=[]
  a=totals(p['assets']);d=totals(p['debts'])
  assert a==p['progress'][-1][1] and d==p['progress'][-1][2]
