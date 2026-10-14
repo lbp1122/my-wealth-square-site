@@ -65,3 +65,12 @@ html[data-input-mode="pointer"] .language select:focus-visible{outline:none;box-
     font-weight:700;
   }
 }
+
+/* Give the mobile language selector room for "Bahasa Melayu" and other names. */
+@media (max-width:760px) {
+  .nav .language select {
+    min-width:170px;
+    max-width:min(100%,190px);
+    font-size:13px;
+  }
+}
