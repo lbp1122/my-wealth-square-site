@@ -1,0 +1,44 @@
+name: MWS mobile navigation layout QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/mobile-nav-qa.yml'
+      - 'scripts/mobile-nav-qa.cjs'
+      - 'index.html'
+      - 'styles.css'
+      - 'site.js'
+      - 'copy.js'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mws-mobile-nav-qa
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test dependencies
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify navigation at eight languages and three phone widths
+        run: |
+          python3 -m http.server 8777 >/tmp/mws-nav-server.log 2>&1 &
+          sleep 2
+          node scripts/mobile-nav-qa.cjs
+      - name: Publish QA screenshots for review
+        run: |
+          git config user.name 'mws-web-qa-bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add examples/previews/nav-320-*.png
+          if ! git diff --cached --quiet; then
+            git commit -m 'test(site): publish mobile navbar visual QA previews'
+            git push
+          fi
