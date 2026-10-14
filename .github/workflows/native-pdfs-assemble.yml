@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/native-pdfs-assemble.yml'
       - 'scripts/assemble_native_pdfs.py'
+      - 'scripts/assemble_native_pdfs.py'
   workflow_dispatch:
 permissions:
   contents: write
@@ -43,7 +44,7 @@ jobs:
         run: |
           git config user.name 'mws-report-publisher'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add examples/mws-native-age-*-usd-20261014.pdf examples/previews/native-age-*.png
+          git add examples/mws-native-age-*-usd-20261014.pdf examples/mws-native-age-*-usd-v2.pdf examples/previews/native-age-*.png
           git rm -r -f examples/native-parts
           git commit -m 'docs(site): publish verified native MWS USD reports'
           git push
