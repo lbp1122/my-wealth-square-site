@@ -155,3 +155,6 @@ html[data-input-mode="pointer"] .language select:focus-visible{outline:none;box-
  .topbar .nav .links a::after{font-size:clamp(10px,2.7vw,12px);font-weight:700}
 }
 @media(max-width:360px){.wrap{width:calc(100% - 24px)}}
+
+/* The original English sample-PDF notice remains visible with a translation beneath it. */
+.sample-translated-notice:not([hidden]){display:block;margin-top:8px;font-size:.92em;line-height:1.5}
