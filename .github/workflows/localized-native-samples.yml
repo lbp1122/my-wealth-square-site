@@ -1,0 +1,87 @@
+name: Publish localized native MWS website PDF samples
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/generate-localized-native-samples.cjs'
+      - '.github/workflows/localized-native-samples.yml'
+permissions:
+  contents: write
+concurrency:
+  group: mws-site-localized-native-samples
+  cancel-in-progress: false
+jobs:
+  render:
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: [en, bm, zh, zh-TW, th, ja, ko, vi]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout website scripts
+        uses: actions/checkout@v4
+        with:
+          path: site
+      - name: Checkout unmodified released MWS v3.1.2 source (read-only)
+        uses: actions/checkout@v4
+        with:
+          repository: lbp1122/my-wealth-square-v3
+          ref: release/v3.1.2-aab103
+          path: native-app
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: native-app/package-lock.json
+      - name: Install isolated build dependencies
+        working-directory: native-app
+        run: |
+          npm ci
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Create real localized v3.1.2 PDFs, USD, encrypted
+        working-directory: native-app
+        env:
+          MWS_SAMPLE_LANG: ${{ matrix.lang }}
+          MWS_SAMPLE_OUTPUT: ${{ github.workspace }}/localized-results
+        run: |
+          cp ../site/scripts/generate-localized-native-samples.cjs scripts/website-l10n.cjs
+          node scripts/website-l10n.cjs
+      - name: Upload one-language output
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-reports-${{ matrix.lang }}
+          path: localized-results/
+          retention-days: 7
+          if-no-files-found: error
+
+  publish:
+    needs: render
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download and merge localized PDFs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: native-reports-*
+          path: examples/localized
+          merge-multiple: true
+      - name: Verify PDF encryption, page count, currency and produce previews
+        run: |
+          python -m pip install --quiet 'PyMuPDF==1.26.4'
+          python scripts/verify_localized_native_samples.py
+      - name: Commit published website samples
+        run: |
+          git config user.name mws-localized-report-publisher
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add examples/localized/ examples/previews/native-age-*-*-cover.png examples/previews/native-age-*-*-inventory.png
+          git commit -m "docs(site): publish 16 localized native MWS report samples" || exit 0
+          git pull --rebase origin main
+          git push
