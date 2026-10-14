@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install PDF dependencies
-        run: python -m pip install --disable-pip-version-check reportlab==4.4.9 pypdf==5.9.0 cryptography>=41
+        run: python -m pip install --disable-pip-version-check reportlab==4.4.9 pypdf==5.9.0 cryptography>=41 'pymupdf>=1.24,<2'
       - name: Generate fictional examples and verify encryption
         run: |
           set -euo pipefail
@@ -45,11 +45,36 @@ jobs:
               assert token.casefold() in content.casefold(),(age,token)
             print(age,len(r.pages),p.stat().st_size)
           PY
+      - name: Render sample report visual QA previews
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import fitz
+          previews=Path('examples/previews')
+          previews.mkdir(parents=True,exist_ok=True)
+          for age in (50,25):
+            doc=fitz.open(f'examples/mws-demo-age-{age}.pdf')
+            assert doc.is_encrypted
+            assert doc.authenticate('MWS-DEMO-2026')
+            page_text=[p.get_text('text') for p in doc]
+            targets={
+              'cover':0,
+              'progress':next(i for i,s in enumerate(page_text) if 'Progress History' in s),
+              'inventory':next(i for i,s in enumerate(page_text) if 'Wealth Inventory Report' in s),
+              'simulator':next(i for i,s in enumerate(page_text) if 'Financial Life Simulator' in s),
+              'annual':next(i for i,s in enumerate(page_text) if 'Yearly balances to age 90' in s)
+            }
+            for name,page_idx in targets.items():
+              pix=doc.load_page(page_idx).get_pixmap(matrix=fitz.Matrix(1.25,1.25),alpha=False)
+              output=previews / f'age-{age}-{name}.png'
+              pix.save(str(output))
+              print(output,'page',page_idx+1,'size',output.stat().st_size)
+          PY
       - name: Publish encrypted sample PDFs in website repository
         run: |
           git config user.name 'mws-sample-docs-bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add examples/mws-demo-age-25.pdf examples/mws-demo-age-50.pdf
+          git add examples/mws-demo-age-25.pdf examples/mws-demo-age-50.pdf examples/previews/*.png
           if ! git diff --cached --quiet; then
             git commit -m 'docs(site): publish protected fictional MWS report examples'
             git push
