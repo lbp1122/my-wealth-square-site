@@ -295,13 +295,41 @@ def create(p):
  story.append(tab([['AGE','DIRECTION','US$ AMOUNT','PURPOSE']]+[[str(aa),kind,rm(value),desc] for aa,kind,value,desc in p['events']],[w*.12,w*.20,w*.22,w*.46],4))
  story.append(P('Financial Life Simulator - 3 x 3','H2Sample'))
  story.append(P('Nine spending / return scenarios for age 90: this is a demonstrative sensitivity table, not the verified MWS simulator.'))
- sensitivity=[['MONTHLY SPENDING','RETURNS -1pp','BASE RETURNS','RETURNS +1pp']]
- for factor,label in [(0.9,'10% below base'),(1.0,'Base spending'),(1.1,'10% above base')]:
-  pp=dict(p);pp['spend']=p['spend']*factor;pp['retireSpend']=p['retireSpend']*factor
+
+ scenario_rows=[]
+ spending_levels=[(0.9,'LOWER SPENDING'),(1.0,'BASE SPENDING'),(1.1,'HIGHER SPENDING')]
+ return_levels=[(-1,'LOWER RETURN'),(0,'BASE RETURN'),(1,'HIGHER RETURN')]
+ for factor,spend_label in spending_levels:
+  pp=dict(p)
+  pp['spend']=p['spend']*factor
+  pp['retireSpend']=p['retireSpend']*factor
   pp['spendingChanges']=[(year,monthly*factor,reason) for year,monthly,reason in p['spendingChanges']]
-  sensitivity.append([label]+[project(pp,delta)[-1][-1] for delta in [-1,0,1]])
- story.append(tab(sensitivity,[w*.25]*4,4))
- story.append(P('Nine illustrative combinations of spending and annual returns. Values show cash + investments + retirement accounts at age 90, not total net worth. A zero end balance is not a guarantee of funding sufficiency.'))
+  grid_row=[]
+  for adjustment,return_label in return_levels:
+   result=project(pp,adjustment)[-1][-1]
+   cell=[
+     Paragraph('AGE 90 &nbsp; / &nbsp; '+return_label,styles['TinySample']),
+     Spacer(1,6),
+     Paragraph('Monthly spending: '+rm(pp['retireSpend']),styles['TinySample']),
+     Spacer(1,5),
+     Paragraph('<b>Remaining financial funds</b>',styles['TinySample']),
+     Paragraph('<b>'+result+'</b>',styles['H3Sample']),
+     Paragraph(spend_label,styles['TinySample'])
+   ]
+   grid_row.append(cell)
+  scenario_rows.append(grid_row)
+ grid=Table(scenario_rows,colWidths=[w/3]*3,rowHeights=[102]*3)
+ grid.setStyle(TableStyle([
+    ('BOX',(0,0),(-1,-1),2,NAVY),
+    ('INNERGRID',(0,0),(-1,-1),1,NAVY),
+    ('BACKGROUND',(1,0),(1,2),TEAL),
+    ('BACKGROUND',(0,1),(2,1),HexColor('#eef8fb')),
+    ('VALIGN',(0,0),(-1,-1),'TOP'),
+    ('LEFTPADDING',(0,0),(-1,-1),10),
+    ('TOPPADDING',(0,0),(-1,-1),8)
+ ]))
+ story.append(grid)
+ story.append(P('Rows vary planned spending by -10%, base and +10%; columns vary annual investment returns by -1 percentage point, base and +1 percentage point. End values are educational illustrations, not the verified MWS engine or total wealth.'))
 
  story.append(PageBreak())
  story.append(P('Financial Independence Planning Report','HeadingSample'))
