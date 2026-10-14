@@ -93,6 +93,176 @@ class WealthSquare(Flowable):
   c.drawCentredString(w*0.75,h-max(17,debth/2),'LIABILITIES '+rm(self.d))
   c.drawCentredString(w*0.75,max(16,(h-debth)/2),'NET WORTH '+rm(self.a-self.d))
 
+class ProgressTrend(Flowable):
+ def __init__(self,progress,width):
+  self.progress=progress
+  self.width=width
+  self.height=176
+ def draw(self):
+  c=self.canv;w=self.width;h=self.height
+  left=58;right=w-20;bottom=34;top=h-17
+  c.setLineWidth(0.8);c.setStrokeColor(GREY)
+  c.line(left,bottom,right,bottom);c.line(left,bottom,left,top)
+  series=[
+   ('Assets',[p[1] for p in self.progress],HexColor('#148f85')),
+   ('Liabilities',[p[2] for p in self.progress],HexColor('#6c7888')),
+   ('Net worth',[p[1]-p[2] for p in self.progress],HexColor('#bc8d16'))
+  ]
+  maximum=max(v for _,data,_ in series for v in data)*1.08
+  for fraction in [0,0.5,1.0]:
+   y=bottom+(top-bottom)*fraction
+   c.setStrokeColor(HexColor('#e0e7ed'));c.line(left,y,right,y)
+   c.setFillColor(INK);c.setFont('Helvetica',6)
+   c.drawRightString(left-6,y-2,'US
+def project(p,return_adjustment=0):
+ cash=sum(v for _,v in p['assets']['cash']);invest=sum(v for _,v in p['assets']['investments'])
+ epf=sum(v for _,v in p['assets']['retirement']);output=[]
+ for age in range(p['age'],91):
+  work=age<p['retire'];salary=p['salary']*(1+p['salaryGrowth']/100)**(age-p['age']) if work else 0
+  passive=p['passive']*(1+p['passiveGrowth']/100)**(age-p['age'])
+  revised_spend=p['spend'] if work else p['retireSpend']
+  for change_age,new_amount,_ in p['spendingChanges']:
+   if change_age<=age:revised_spend=new_amount
+  spend=revised_spend*(1+p['inflation']/100)**(age-p['age'])
+  cprev=cash;iprev=invest;eprev=epf;epfIn=0;eventsIn=0;eventsOut=0
+  for month in range(1,13):
+   worker=salary*0.06;employer=salary*0.04;epfIn+=worker+employer
+   cash+=salary-worker+passive-spend;epf+=worker+employer
+   for aa,typ,amount,_ in p['events']:
+    if aa==age and month==7:
+     if typ=='Addition':cash+=amount;eventsIn+=amount
+     else:cash-=amount;eventsOut+=amount
+   if cash<0:invest+=cash;cash=0
+   if invest<0 and age>=p['access']:epf+=invest;invest=0
+   if invest<0:invest=0
+   epf=max(0,epf)
+   cash*=(1+(p['cashReturn']+return_adjustment)/100)**(1/12)
+   invest*=(1+(p['invReturn']+return_adjustment)/100)**(1/12)
+   epf*=(1+(p['epfReturn']+return_adjustment)/100)**(1/12)
+  output.append([str(age),rm((salary+passive)*12),rm(spend*12),rm(epfIn),rm(cash),rm(invest),rm(epf),rm(cash+invest+epf)])
+ return output
+
+def create(p):
+ age=p['age'];filename=BASE/f'mws-demo-age-{age}.pdf';plain=BASE/f'_plain-{age}.pdf'
+ doc=SimpleDocTemplate(str(plain),pagesize=A4,leftMargin=16*mm,rightMargin=16*mm,
+                       topMargin=16*mm,bottomMargin=20*mm)
+ w=A4[0]-32*mm;story=[]
+ a=totals(p['assets']);d=totals(p['debts'])
+ assert a==p['progress'][-1][1] and d==p['progress'][-1][2]
+ story+=[P('MY WEALTH SQUARE','H3Sample'),P('Your wealth, in one picture.','HeadingSample'),
+         P('Fictional educational example | '+p['name']+' | Age '+str(age)+' | 14 October 2026'),
+         P('FICTIONAL EXAMPLE ONLY. Names, references and figures are invented. Retirement numbers use a simplified demonstration model rather than the app calculation engine.'),
+         Spacer(1,12),WealthSquare(a,d,w),Spacer(1,12),
+         tab([['ASSETS','LIABILITIES','NET WORTH','DEBT / ASSETS'],
+              [rm(a),rm(d),rm(a-d),'{:.1f}%'.format(100*d/a)]],[w/4]*4)]
+ story.append(P('Profile and monthly inputs','H2Sample'))
+ story.append(tab([['PROFILE','AGE / DATE OF BIRTH','OCCUPATION','CURRENCY'],
+                   [p['name']+' / '+p['gender'],str(age)+' / '+p['dob'],p['job'],'USD (US$)'],
+                   ['MONTHLY INCOME','MONTHLY SPENDING','RETIREMENT AGE','HORIZON'],
+                   [rm(p['salary']+p['passive']),rm(p['spend']),str(p['retire']),'Age 90']],[w/4]*4))
+ story.append(P('Full balance-sheet categories','H2Sample'))
+ acc=[['ASSET CATEGORY','US$ AMOUNT','LIABILITY CATEGORY','US$ AMOUNT']]
+ for j in range(7):
+  ca,al=categories[j];de,dl=debts[j] if j<len(debts) else ('','')
+  acc.append([al,rm(sum(v for _,v in p['assets'][ca])),dl,rm(sum(v for _,v in p['debts'].get(de,[]))) if de else ''])
+ story.append(tab(acc,[w*.31,w*.19,w*.31,w*.19]))
+ story.append(PageBreak());story.append(P('Asset and liability inventory','HeadingSample'))
+ story.append(P('All amounts are in USD. Account names, providers and references are DEMO ONLY. Empty categories show RM0.'))
+ for group,label,names in [(p['assets'],'ASSETS',categories),(p['debts'],'LIABILITIES',debts)]:
+  story.append(P(label,'H2Sample'))
+  for key,title in names:
+   items=group[key];story.append(P(title+' | '+rm(sum(x[1] for x in items)),'H3Sample'))
+   if not items:story.append(P('No entries | RM0'));continue
+   rr=[['HOLDING','AMOUNT','DETAILS (ALL FICTIONAL)']]
+   for idx,(name,value) in enumerate(items,1):
+    ref='DEMO-'+str(age)+'-'+key.upper()+'-'+str(idx).zfill(2)
+    extra='Valuation / outstanding amount; USD; reference '+ref+'; FICTIONAL RECORD ONLY'
+    if key=='cash':
+     institutions=['Northstar Example Bank (fictional)','Blue Oak Demonstration Bank (fictional)','Maple Fiction Trust (fictional)']
+     extra='Institution: '+institutions[(idx-1)%3]+'; Account holder: '+p['name']+'; Account number: DEMO-'+str(age)+'-CASH-'+str(idx).zfill(3)+'-USD; Currency: USD; Account: '+name+'; NOT A REAL ACCOUNT'
+    if key=='retirement':extra+='; Fictional plan account: DEMO-PLAN-'+str(age)+'-'+str(idx).zfill(3)
+    if key=='investments':extra+='; Fictional broker: Example Securities; Account: DEMO-BROKER-'+str(age)+'-'+str(idx).zfill(3)
+    if key=='property':extra+='; demo title DEMO-TITLE-'+str(idx)
+    if key=='vehicles':extra+='; demo registration DEMO-VEH-'+str(idx)
+    if key=='privateInvestments':extra+='; ownership / book value, not liquid cash'
+    rr.append([name,rm(value),extra])
+   rr.append([title+' total',rm(sum(x[1] for x in items)),str(len(items))+' individually recorded items'])
+   story.append(tab(rr,[w*.28,w*.16,w*.56],4))
+ story.append(P('Saved progress: October 2024 to October 2026','H2Sample'))
+ original=p['progress'][0][1]-p['progress'][0][2];rr=[['DATE','ASSETS','LIABILITIES','NET WORTH','VS. START']]
+ for date,assets,debtsum in p['progress']:
+  worth=assets-debtsum;delta=((worth-original)/abs(original)*100) if original else 0
+  rr.append([date,rm(assets),rm(debtsum),rm(worth),'{:+.1f}%'.format(delta)])
+ story.append(tab(rr,[w*.18,w*.20,w*.20,w*.23,w*.19],4))
+ story.append(P('Two-year progress chart (USD)','H2Sample'))
+ story.append(ProgressTrend(p['progress'],w))
+ story.append(P('Financial Life - input assumptions','H2Sample'))
+ inp=[['INPUT','VALUE','INPUT','VALUE'],
+      ['Age now',str(age),'Plan to age','90'],
+      ['Retirement age',str(p['retire']),'Retirement access age',str(p['access'])],
+      ['Cash opening',rm(sum(v for _,v in p['assets']['cash'])),'Shares opening',rm(sum(v for _,v in p['assets']['investments']))],
+      ['Retirement funds opening',rm(sum(v for _,v in p['assets']['retirement'])),'Drawdown strategy','Cash - shares - Retirement'],
+      ['Salary / month',rm(p['salary']),'Passive income / month',rm(p['passive'])],
+      ['Salary growth / year',str(p['salaryGrowth'])+'%','Passive income growth',str(p['passiveGrowth'])+'%'],
+      ['Living spending / month',rm(p['spend']),'Retirement spending / month',rm(p['retireSpend'])],
+      ['Inflation / year',str(p['inflation'])+'%','Cash return / year',str(p['cashReturn'])+'%'],
+      ['Shares return / year',str(p['invReturn'])+'%','Retirement return / year',str(p['epfReturn'])+'%'],
+      ['Employee retirement contributions', '6% salary','Employer retirement contributions','4% salary'],
+      ['One-off events',str(len(p['events'])),'Yearly return overrides','None']]
+ story.append(tab(inp,[w*.28,w*.22,w*.28,w*.22],4))
+ story.append(P('Planned future spending changes','H2Sample'))
+ story.append(tab([['AGE','NEW MONTHLY SPENDING','REASON']]+[[str(aa),rm(v),reason] for aa,v,reason in p['spendingChanges']],[w*.12,w*.3,w*.58],4))
+ story.append(P('One-time money events','H2Sample'))
+ story.append(tab([['AGE','DIRECTION','US$ AMOUNT','PURPOSE']]+[[str(aa),kind,rm(value),desc] for aa,kind,value,desc in p['events']],[w*.12,w*.20,w*.22,w*.46],4))
+ story.append(P('3 x 3 sensitivity: spending x investment returns at age 90','H2Sample'))
+ sensitivity=[['MONTHLY SPENDING','RETURNS -1pp','BASE RETURNS','RETURNS +1pp']]
+ for factor,label in [(0.9,'10% below base'),(1.0,'Base spending'),(1.1,'10% above base')]:
+  pp=dict(p);pp['spend']=p['spend']*factor;pp['retireSpend']=p['retireSpend']*factor
+  pp['spendingChanges']=[(year,monthly*factor,reason) for year,monthly,reason in p['spendingChanges']]
+  sensitivity.append([label]+[project(pp,delta)[-1][-1] for delta in [-1,0,1]])
+ story.append(tab(sensitivity,[w*.25]*4,4))
+ story.append(P('Nine illustrative combinations of spending and annual returns. Values show cash + investments + retirement accounts at age 90, not total net worth. A zero end balance is not a guarantee of funding sufficiency.'))
+ story.append(P('Annual Financial Life illustration through age 90','H2Sample'))
+ story.append(P('These numbers illustrate the presentation only; they are not generated by the current MWS Financial Life calculation engine. Nominal USD, after hypothetical return / contribution / spending assumptions. Houses and vehicles are not counted as spendable funds.'))
+ projections=[['AGE','INCOME / YEAR','SPEND / YEAR','RETIREMENT ADDITIONS','END CASH','END SHARES','END RETIREMENT','LIQUID + RETIREMENT']]
+ projections+=project(p)
+ story.append(tab(projections,[w*.055,w*.15,w*.15,w*.135,w*.12,w*.12,w*.115,w*.155],3))
+ story.append(Spacer(1,14));story.append(P('Password-protected sharing','H2Sample'))
+ story.append(P('This example is AES-256-encrypted using a public demo password. Real reports should have a different, private and unique password, provided separately to a trusted recipient. A recipient can still screenshot, print, copy or forward a report after unlocking.'))
+ story.append(P('Offline design: core financial calculations and local reports work on the device. Google Play, exchange-rate refresh, web links and recipient apps are separate online services.'))
+ story.append(P('Fictional educational content, not personalised financial advice. 14 October 2026.','TinySample'))
+ doc.build(story,onFirstPage=bottom,onLaterPages=bottom)
+ reader=PdfReader(str(plain));writer=PdfWriter();writer.append_pages_from_reader(reader)
+ writer.add_metadata({'/Title':'My Wealth Square - Fictional sample age '+str(age),'/Subject':'Fictional education PDF; password-protected'})
+ writer.encrypt(user_password=PASSWORD,owner_password=PASSWORD+'-owner',algorithm='AES-256')
+ with filename.open('wb') as f:writer.write(f)
+ plain.unlink()
+ verify=PdfReader(str(filename))
+ assert verify.is_encrypted and verify.decrypt(PASSWORD)
+ assert len(verify.pages)>=4
+ assert len(p['assets']['cash'])>0
+ print(str(filename),len(verify.pages),'pages',filename.stat().st_size,'bytes','A=',a,'L=',d)
+for p in profiles:create(p)
++format(maximum*fraction/1e6,'.2f')+'m')
+  count=len(self.progress)
+  for title,data,color in series:
+   c.setStrokeColor(color);c.setLineWidth(2)
+   for i in range(1,count):
+    x1=left+(right-left)*(i-1)/(count-1)
+    y1=bottom+(top-bottom)*data[i-1]/maximum
+    x2=left+(right-left)*i/(count-1)
+    y2=bottom+(top-bottom)*data[i]/maximum
+    c.line(x1,y1,x2,y2)
+  for ix in [0,count//2,count-1]:
+   x=left+(right-left)*ix/(count-1)
+   c.setFillColor(INK);c.setFont('Helvetica',7)
+   c.drawCentredString(x,bottom-15,self.progress[ix][0][:7])
+  for j,(title,_,color) in enumerate(series):
+   x=left+j*(w-left)/3
+   c.setFillColor(color);c.rect(x,3,8,8,fill=1,stroke=0)
+   c.setFillColor(INK);c.setFont('Helvetica',7)
+   c.drawString(x+12,4,title)
+
 def totals(d):return sum(v for rows in d.values() for _,v in rows)
 def project(p,return_adjustment=0):
  cash=sum(v for _,v in p['assets']['cash']);invest=sum(v for _,v in p['assets']['investments'])
