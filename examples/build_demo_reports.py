@@ -38,48 +38,50 @@ categories=[
  ('retirement','Retirement funds'),('property','Property'),('vehicles','Vehicles'),('otherAssets','Other assets')]
 debts=[('homeLoan','Home / mortgage loans'),('vehicleLoan','Vehicle loans'),('cards','Cards / personal loans'),('otherDebt','Other liabilities')]
 older_assets={
- 'cash':[('Everyday checking account',55000),('Term-deposit ladder',85000),('Emergency savings account',30000)],
- 'investments':[('US-listed shares',220000),('Global equity unit trusts',175000),('Bond / ETF portfolio',105000)],
- 'privateInvestments':[('Family trading company stake (35%)',350000),('Partnership interest (20%)',180000),('Private venture loan note',120000)],
- 'retirement':[('Employer 401(k) account',500000),('Roth IRA account',320000),('Individual retirement account',80000)],
- 'property':[('Main residence - California',980000),('Rental condominium - Texas',540000),('Residential plot - Georgia',230000)],
- 'vehicles':[('Family SUV',85000),('Compact sedan',43000),('Motorcycle',19000)],
- 'otherAssets':[('Gold bullion',90000),('Art collection',45000),('Collectible watch',15000)]}
+ 'cash':[('Everyday checking account',55000),('Fixed-deposit savings account',65000),('Emergency reserve account',30000)],
+ 'investments':[('Listed share portfolio',90000),('Global index funds',85000),('Bond and ETF portfolio',55000)],
+ 'privateInvestments':[('Private family-business stake (30%)',60000),('Small partnership ownership',40000),('Private company loan note',20000)],
+ 'retirement':[('Employer retirement plan',170000),('Individual retirement account',135000),('Supplementary retirement account',55000)],
+ 'property':[('Primary residence',320000),('Rental condominium',135000),('Residential land lot',45000)],
+ 'vehicles':[('Family SUV',38000),('Compact sedan',22000),('Motorcycle',10000)],
+ 'otherAssets':[('Physical investment gold',25000),('Art and collectibles',15000),('Watch collection',10000)]}
 older_debts={
- 'homeLoan':[('Residence housing mortgage',520000),('Condominium mortgage',180000),('Land financing',70000)],
- 'vehicleLoan':[('SUV hire purchase',30000),('Sedan financing',15000),('Motorcycle instalment',10000)],
- 'cards':[('Credit card A',11000),('Credit card B',5000),('Small personal credit line',2000)],
- 'otherDebt':[('Private business borrowing',65000),('Education support loan',40000),('Family loan payable',20000)]}
+ 'homeLoan':[('Primary residence mortgage',255000),('Condominium mortgage',100000),('Land financing',35000)],
+ 'vehicleLoan':[('SUV financing',20000),('Sedan financing',8000),('Motorcycle instalment',4000)],
+ 'cards':[('Credit card A balance',5000),('Credit card B balance',4000),('Personal credit line',4000)],
+ 'otherDebt':[('Small business loan',18000),('Education support loan',15000),('Family loan payable',12000)]}
 young_assets={
- 'cash':[('Daily savings',10500),('Emergency savings',7500)],
- 'investments':[('Equity ETF',9000),('Index unit trust',3000)], 'privateInvestments':[],
- 'retirement':[('Employer 401(k) plan',18000),('Roth IRA',2000)],
- 'property':[], 'vehicles':[('Used compact car',23000)],
- 'otherAssets':[('Laptop and work equipment',3200)]}
+ 'cash':[('Current / salary savings',10000),('Emergency savings',8000)],
+ 'investments':[('Equity ETF holding',10000),('Index fund account',5000)],
+ 'privateInvestments':[], 'retirement':[('Employer retirement plan',21000),('Individual retirement savings',4000)],
+ 'property':[], 'vehicles':[('Used compact car',28000)],
+ 'otherAssets':[('Laptop and professional equipment',4000)]}
 young_debts={
- 'homeLoan':[], 'vehicleLoan':[('Car hire purchase',17500)],
- 'cards':[('Credit card statement',1250)], 'otherDebt':[('Study loan',13500)]}
+ 'homeLoan':[], 'vehicleLoan':[('Compact car financing',24000)],
+ 'cards':[('Credit card statement balance',1000)], 'otherDebt':[('Student education loan',15000)]}
+
 oldprogress=[
- ('2024-10-14',3015000,1410000),('2025-01-14',3120000,1340000),('2025-04-14',3260000,1280000),
- ('2025-07-14',3485000,1200000),('2025-10-14',3650000,1125000),('2026-01-14',3800000,1080000),
- ('2026-04-14',3980000,1055000),('2026-07-14',4110000,1020000),('2026-10-14',4267000,968000)]
+ ('2024-10-14',1220000,530000),('2025-01-14',1260000,527000),('2025-04-14',1300000,523000),
+ ('2025-07-14',1340000,515000),('2025-10-14',1380000,508000),('2026-01-14',1415000,500000),
+ ('2026-04-14',1440000,494000),('2026-07-14',1460000,487000),('2026-10-14',1480000,480000)]
 youngprogress=[
- ('2024-10-14',34000,40000),('2025-01-14',37500,39200),('2025-04-14',42800,38500),
- ('2025-07-14',48900,37700),('2025-10-14',55000,36500),('2026-01-14',61000,35400),
- ('2026-04-14',67600,34000),('2026-07-14',74200,32700),('2026-10-14',76200,32250)]
+ ('2024-10-14',48000,43000),('2025-01-14',51000,42400),('2025-04-14',55000,42000),
+ ('2025-07-14',60000,41700),('2025-10-14',67000,41100),('2026-01-14',73000,40900),
+ ('2026-04-14',79000,40500),('2026-07-14',85000,40200),('2026-10-14',90000,40000)]
+
 profiles=[
  dict(age=50,name='Alex Tan',gender='Male',dob='1976-04-08',job='Operations Director',
      assets=older_assets,debts=older_debts,progress=oldprogress,retire=62,access=59,
-     salary=26000,passive=3800,spend=13500,retireSpend=15500,inflation=2.75,cashReturn=3.1,
+     salary=11000,passive=1200,spend=5500,retireSpend=6500,inflation=2.75,cashReturn=3.1,
      invReturn=5.5,epfReturn=5.0,salaryGrowth=2.0,passiveGrowth=1.0,
-     spendingChanges=[(55,12500,'Planned work-life budget'),(62,15500,'Retirement budget'),(72,13800,'Planned lifestyle adjustment')],
-     events=[(56,'Addition',150000,'Illustrative gift'),(61,'Withdrawal',200000,'Renovation'),(66,'Withdrawal',85000,'Vehicle replacement')]),
+     spendingChanges=[(55,5900,'Planned mid-career spending'),(62,6500,'Retirement budget'),(72,6100,'Planned later-life adjustment')],
+     events=[(56,'Addition',40000,'Illustrative inheritance'),(61,'Withdrawal',60000,'Home renovation'),(66,'Withdrawal',25000,'Vehicle replacement')]),
  dict(age=25,name='Maya Lim',gender='Female',dob='2001-03-18',job='Early-career designer',
      assets=young_assets,debts=young_debts,progress=youngprogress,retire=65,access=59,
-     salary=7200,passive=220,spend=3700,retireSpend=6500,inflation=2.75,cashReturn=2.8,
+     salary=5800,passive=150,spend=3000,retireSpend=4200,inflation=2.75,cashReturn=2.8,
      invReturn=6.0,epfReturn=5.0,salaryGrowth=3.0,passiveGrowth=2.0,
-     spendingChanges=[(30,4600,'Expected household changes'),(45,5600,'Planned family budget'),(65,6500,'Retirement living budget')],
-     events=[(27,'Withdrawal',15000,'Professional course'),(35,'Withdrawal',50000,'Possible home deposit'),(44,'Addition',25000,'Illustrative cash gift')])
+     spendingChanges=[(30,3500,'Expected household changes'),(45,4300,'Planned family budget'),(65,4200,'Retirement living budget')],
+     events=[(27,'Withdrawal',6000,'Professional course'),(35,'Withdrawal',18000,'Possible home deposit'),(44,'Addition',10000,'Illustrative cash gift')])
 ]
 class WealthSquare(Flowable):
  def __init__(self,assets,debt,width):self.a=assets;self.d=debt;self.width=width;self.height=150
@@ -187,12 +189,12 @@ def create(p):
   acc.append([al,rm(sum(v for _,v in p['assets'][ca])),dl,rm(sum(v for _,v in p['debts'].get(de,[]))) if de else ''])
  story.append(tab(acc,[w*.31,w*.19,w*.31,w*.19]))
  story.append(PageBreak());story.append(P('Asset and liability inventory','HeadingSample'))
- story.append(P('All amounts are in USD. Account names, providers and references are DEMO ONLY. Empty categories show RM0.'))
+ story.append(P('All amounts are in USD. Account names, providers and references are DEMO ONLY. Empty categories show US$0.'))
  for group,label,names in [(p['assets'],'ASSETS',categories),(p['debts'],'LIABILITIES',debts)]:
   story.append(P(label,'H2Sample'))
   for key,title in names:
    items=group[key];story.append(P(title+' | '+rm(sum(x[1] for x in items)),'H3Sample'))
-   if not items:story.append(P('No entries | RM0'));continue
+   if not items:story.append(P('No entries | US$0'));continue
    rr=[['HOLDING','AMOUNT','DETAILS (ALL FICTIONAL)']]
    for idx,(name,value) in enumerate(items,1):
     ref='DEMO-'+str(age)+'-'+key.upper()+'-'+str(idx).zfill(2)
