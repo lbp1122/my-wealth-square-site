@@ -18,3 +18,18 @@ html[data-input-mode="pointer"] .language select:focus-visible{outline:none;box-
 .sample-reports .sample-note{max-width:800px;padding:14px 18px;border-left:4px solid #15998f;background:#e8f9f5;color:#24475d;border-radius:0 8px 8px 0}
 .sample-reports .section-head{max-width:880px}
 @media(max-width:680px){.sample-reports .sample-card-grid{grid-template-columns:1fr}}
+
+/* Responsive navigation for long Malay, Vietnamese, Thai and Chinese labels. */
+@media (max-width: 760px) {
+  .nav .links { display:flex; flex-wrap:wrap; justify-content:center; gap:10px 16px; min-width:0; }
+  .nav .links a { min-width:0; font-size:13px; line-height:1.35; text-align:center; overflow-wrap:anywhere; }
+  .nav .brand { flex: 0 1 auto; min-width:0; }
+}
+@media (max-width: 420px) {
+  .nav .links { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px 8px; align-items:center; }
+  .nav .links a { font-size:12px; line-height:1.35; }
+  .nav .language select { max-width:min(38vw,145px); font-size:13px; }
+  .brand { gap:8px; font-size:15px; }
+}
+.sample-item, .sample-hero { min-width:0; overflow-wrap:break-word; }
+.sample-amount { overflow-wrap:anywhere; }
