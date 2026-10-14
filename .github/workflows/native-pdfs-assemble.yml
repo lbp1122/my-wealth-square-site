@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/native-pdfs-assemble.yml'
+      - 'scripts/assemble_native_pdfs.py'
   workflow_dispatch:
 permissions:
   contents: write
