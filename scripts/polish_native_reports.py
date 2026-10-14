@@ -28,7 +28,7 @@ for age,asset in [(50,'USD 1.48m'),(25,'USD 90.0k')]:
     cells=[fitz.Rect(90,568,299,610),fitz.Rect(299,568,506,610)]
     for rect in cells:
         cover.draw_rect(rect,color=NAVY,fill=PALE,width=1.1,overlay=True)
-    labels=[f'Total Assets = {asset}',f'Liabilities + Net Worth = {asset}']
+    # Remove the original oversized right caption's bleed outside the square.\n    cover.draw_rect(fitz.Rect(508,568,575,610),color=None,fill=(246/255,248/255,251/255),overlay=True)\n    labels=[f'Total Assets = {asset}',f'Liabilities + Net Worth = {asset}']
     for rect,label in zip(cells,labels):
         usable=fitz.Rect(rect.x0+5,rect.y0+5,rect.x1-5,rect.y1-3)
         size=10.0
