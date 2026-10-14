@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/runner/work/my-wealth-square-site/my-wealth-square-site/scripts/assemble_native_pdfs.py", line 15, in <module>
+    assert len(data)==length and hashlib.sha256(data).hexdigest()==checksum
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
