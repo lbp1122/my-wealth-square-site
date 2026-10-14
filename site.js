@@ -33,6 +33,11 @@
       const value = selected[el.dataset.k];
       if (value !== undefined) el.textContent = value;
     });
+    // Keep the English sample-PDF policy visible in every website language.
+    // Only the supporting translation changes with the selected language.
+    document.querySelectorAll('.sample-translated-notice').forEach(el => {
+      el.hidden = lang === 'en';
+    });
     document.querySelectorAll('[data-k-html]').forEach(el => {
       const value = selected[el.dataset.kHtml];
       if (value !== undefined) el.innerHTML = value;
