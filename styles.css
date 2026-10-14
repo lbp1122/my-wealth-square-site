@@ -138,9 +138,9 @@ html[data-input-mode="pointer"] .language select:focus-visible{outline:none;box-
  .topbar .nav{display:grid;grid-template-columns:minmax(0,1fr) auto auto;
     grid-template-rows:auto auto;gap:7px 6px;padding:11px 0 8px;align-items:center}
  .topbar .nav .brand{grid-column:1;grid-row:1;min-width:0;max-width:100%;
-    font-size:clamp(11px,3vw,15px);gap:5px;white-space:normal;line-height:1.14}
+    font-size:clamp(13px,3.65vw,17px);gap:6px;white-space:normal;line-height:1.14}
  .topbar .nav .brand span{min-width:0;overflow-wrap:normal;white-space:normal}
- .topbar .nav .brand img{width:clamp(26px,8vw,35px);height:clamp(26px,8vw,35px)}
+ .topbar .nav .brand img{width:clamp(31px,9.5vw,42px);height:clamp(31px,9.5vw,42px)}
  .topbar .nav .nav-get-app{grid-column:2;grid-row:1;max-width:80px;
     min-width:45px;min-height:37px;padding:7px 7px;font-size:clamp(10px,2.8vw,12px)}
  .topbar .nav .language{grid-column:3;grid-row:1;justify-self:end;min-width:0}
@@ -154,7 +154,7 @@ html[data-input-mode="pointer"] .language select:focus-visible{outline:none;box-
     text-overflow:clip;min-width:0;padding:7px 0;text-align:center}
  .topbar .nav .links a::after{font-size:clamp(10px,2.7vw,12px);font-weight:700}
 }
-@media(max-width:360px){.wrap{width:calc(100% - 24px)}}
+@media(max-width:360px){.wrap{width:calc(100% - 24px)}.topbar .nav .brand{font-size:12px;gap:4px}.topbar .nav .brand img{width:29px;height:29px}}
 
 /* The original English sample-PDF notice remains visible with a translation beneath it. */
 .sample-translated-notice:not([hidden]){display:block;margin-top:8px;font-size:.92em;line-height:1.5}
