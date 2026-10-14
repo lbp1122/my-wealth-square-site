@@ -1,1 +1,3 @@
 Generate AES-256 encrypted fictional sample PDF reports for public website; 2026-10-14.
+
+Retry with cryptography installed for AES-256.
