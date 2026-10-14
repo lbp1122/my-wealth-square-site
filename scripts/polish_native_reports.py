@@ -28,7 +28,11 @@ for age,asset in [(50,'USD 1.48m'),(25,'USD 90.0k')]:
     cells=[fitz.Rect(90,568,299,610),fitz.Rect(299,568,506,610)]
     for rect in cells:
         cover.draw_rect(rect,color=NAVY,fill=PALE,width=1.1,overlay=True)
-    # Remove the original oversized right caption's bleed outside the square.\n    cover.draw_rect(fitz.Rect(508,568,575,610),color=None,fill=(246/255,248/255,251/255),overlay=True)\n    labels=[f'Total Assets = {asset}',f'Liabilities + Net Worth = {asset}']
+    # Clear the old oversized caption that extends beyond the Wealth Square.
+    # This off-white fill matches the report canvas outside the square.
+    cover.draw_rect(fitz.Rect(508,565,584,624), color=None,
+                    fill=(246/255,248/255,251/255), overlay=True)
+    labels=[f'Total Assets = {asset}',f'Liabilities + Net Worth = {asset}']
     for rect,label in zip(cells,labels):
         usable=fitz.Rect(rect.x0+5,rect.y0+5,rect.x1-5,rect.y1-3)
         size=10.0
@@ -39,10 +43,6 @@ for age,asset in [(50,'USD 1.48m'),(25,'USD 90.0k')]:
         rc=cover.insert_textbox(usable,label,fontname='hebo',fontsize=size,
                                 lineheight=1.1,color=NAVY,align=1,overlay=True)
         assert rc >= 0,(age,label,rc)
-    # Remove the native export's trailing text beyond the right edge of the
-    # square.  Merely redrawing the two footer cells leaves a clipped '8m'
-    # / '0k' artifact visible to the right of the square on both samples.
-    cover.draw_rect(fitz.Rect(508,565,584,624), color=None, fill=(1,1,1), overlay=True)
     # Preview the full native first page and native Wealth Inventory (page three).
     for section,index in [('cover',0),('inventory',2)]:
         pdf[index].get_pixmap(matrix=fitz.Matrix(.8,.8),alpha=False).save(
