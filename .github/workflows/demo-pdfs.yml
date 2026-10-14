@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - '.github/RUN_DEMO_PDFS'
+      - 'examples/build_demo_reports.py'
+      - '.github/workflows/demo-pdfs.yml'
   workflow_dispatch:
 permissions:
   contents: write
@@ -36,6 +38,9 @@ jobs:
             r=PdfReader(p)
             assert r.is_encrypted and r.decrypt('MWS-DEMO-2026')
             content=' '.join(x.extract_text() or '' for x in r.pages)
+            assert ('US$1,000,000' if age==50 else 'US$50,000') in content
+            assert 'DEMO-LOAN-' in content and 'DEMO-BROKER-' in content
+            assert 'MYR' not in content and 'RM0' not in content
             for token in ['NET WORTH','2024-10-14','2026-10-14','90']:
               assert token.casefold() in content.casefold(),(age,token)
             print(age,len(r.pages),p.stat().st_size)
