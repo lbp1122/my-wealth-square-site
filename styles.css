@@ -9,3 +9,12 @@ html[data-input-mode="pointer"] .language select:focus-visible{outline:none;box-
 .brand img,.visual-heading img,.message-top img{object-fit:contain;border-radius:24%;}
 
 .purchase-note{margin-top:24px;font-size:14px;line-height:1.7;max-width:900px}.purchase-note a{font-weight:650}
+
+/* Complete encrypted-report examples */
+.sample-reports .sample-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:24px 0}
+.sample-reports .sample-card-grid>.card{border:1px solid #dbe6ef;background:#fff;border-radius:16px;padding:25px}
+.sample-reports .sample-card-grid>.card b{color:#149b91;font-size:30px}
+.sample-reports .sample-card-grid>.card p{line-height:1.55}
+.sample-reports .sample-note{max-width:800px;padding:14px 18px;border-left:4px solid #15998f;background:#e8f9f5;color:#24475d;border-radius:0 8px 8px 0}
+.sample-reports .section-head{max-width:880px}
+@media(max-width:680px){.sample-reports .sample-card-grid{grid-template-columns:1fr}}
