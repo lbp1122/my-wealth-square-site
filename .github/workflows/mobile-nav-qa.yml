@@ -40,5 +40,6 @@ jobs:
           git add examples/previews/nav-320-*.png
           if ! git diff --cached --quiet; then
             git commit -m 'test(site): publish mobile navbar visual QA previews'
+            git pull --rebase origin main
             git push
           fi
