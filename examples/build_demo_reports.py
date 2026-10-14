@@ -217,7 +217,7 @@ def create(p):
  story+=[P('MY WEALTH SQUARE','H3Sample'),P('Your wealth, in one picture.','HeadingSample'),
          P('Fictional educational example | '+p['name']+' | Age '+str(age)+' | 14 October 2026'),
          P('FICTIONAL EXAMPLE ONLY. Names, references and figures are invented. Retirement numbers use a simplified demonstration model rather than the app calculation engine.'),
-         Spacer(1,12),WealthSquare(a,d,w),Spacer(1,12),
+         Spacer(1,12),WealthSquare(a,d,w,[(title,sum(v for _,v in p['assets'][key])) for key,title in categories]),Spacer(1,12),
          tab([['ASSETS','LIABILITIES','NET WORTH','DEBT / ASSETS'],
               [rm(a),rm(d),rm(a-d),'{:.1f}%'.format(100*d/a)]],[w/4]*4)]
  story.append(P('Profile and monthly inputs','H2Sample'))
@@ -231,28 +231,7 @@ def create(p):
   ca,al=categories[j];de,dl=debts[j] if j<len(debts) else ('','')
   acc.append([al,rm(sum(v for _,v in p['assets'][ca])),dl,rm(sum(v for _,v in p['debts'].get(de,[]))) if de else ''])
  story.append(tab(acc,[w*.31,w*.19,w*.31,w*.19]))
- story.append(PageBreak());story.append(P('Asset and liability inventory','HeadingSample'))
- story.append(P('All amounts are in USD. Account names, providers and references are DEMO ONLY. Empty categories show US$0.'))
- for group,label,names in [(p['assets'],'ASSETS',categories),(p['debts'],'LIABILITIES',debts)]:
-  story.append(P(label,'H2Sample'))
-  for key,title in names:
-   items=group[key];story.append(P(title+' | '+rm(sum(x[1] for x in items)),'H3Sample'))
-   if not items:story.append(P('No entries | US$0'));continue
-   rr=[['HOLDING','AMOUNT','DETAILS (ALL FICTIONAL)']]
-   for idx,(name,value) in enumerate(items,1):
-    ref='DEMO-'+str(age)+'-'+key.upper()+'-'+str(idx).zfill(2)
-    extra='Valuation / outstanding amount; USD; reference '+ref+'; FICTIONAL RECORD ONLY'
-    if key=='cash':
-     institutions=['Northstar Example Bank (fictional)','Blue Oak Demonstration Bank (fictional)','Maple Fiction Trust (fictional)']
-     extra='Institution: '+institutions[(idx-1)%3]+'; Account holder: '+p['name']+'; Account number: DEMO-'+str(age)+'-CASH-'+str(idx).zfill(3)+'-USD; Currency: USD; Account: '+name+'; NOT A REAL ACCOUNT'
-    if key=='retirement':extra+='; Fictional plan account: DEMO-PLAN-'+str(age)+'-'+str(idx).zfill(3)
-    if key=='investments':extra+='; Fictional broker: Example Securities; Account: DEMO-BROKER-'+str(age)+'-'+str(idx).zfill(3)
-    if key=='property':extra+='; demo title DEMO-TITLE-'+str(idx)
-    if key=='vehicles':extra+='; demo registration DEMO-VEH-'+str(idx)
-    if key=='privateInvestments':extra+='; ownership / book value, not liquid cash'
-    rr.append([name,rm(value),extra])
-   rr.append([title+' total',rm(sum(x[1] for x in items)),str(len(items))+' individually recorded items'])
-   story.append(tab(rr,[w*.28,w*.16,w*.56],4))
+ story.append(PageBreak());story.append(P('Progress History','HeadingSample'))
  story.append(P('Saved progress: October 2024 to October 2026','H2Sample'))
  original=p['progress'][0][1]-p['progress'][0][2];rr=[['DATE','ASSETS','LIABILITIES','NET WORTH','VS. START']]
  for date,assets,debtsum in p['progress']:
@@ -261,6 +240,41 @@ def create(p):
  story.append(tab(rr,[w*.18,w*.20,w*.20,w*.23,w*.19],4))
  story.append(P('Two-year progress chart (USD)','H2Sample'))
  story.append(ProgressTrend(p['progress'],w))
+
+ story.append(PageBreak());story.append(P('Wealth Inventory Report','HeadingSample'))
+ story.append(P('USD only. Every institution, person, account identifier and loan reference is invented for this demonstration. Empty categories show US$0.'))
+ for group,label,names in [(p['assets'],'ASSETS',categories),(p['debts'],'LIABILITIES',debts)]:
+  story.append(P(label,'H2Sample'))
+  for key,title in names:
+   items=group[key];story.append(P(title+' | '+rm(sum(x[1] for x in items)),'H3Sample'))
+   if not items:story.append(P('No entries | US$0'));continue
+   rr=[['HOLDING','AMOUNT','DETAILS (ALL FICTIONAL)']]
+   for idx,(name,value) in enumerate(items,1):
+    ref='DEMO-'+str(age)+'-'+key.upper()+'-'+str(idx).zfill(2)
+
+    fictional_banks=['Northstar Demo Bank (fictional)','Blue Oak Example Bank (fictional)','Maple Placeholder Credit Union (fictional)']
+    financial_bank=fictional_banks[(idx-1)%3]
+    extra='Record reference: '+ref+'; Amount: '+rm(value)+'; All names and accounts are FICTIONAL.'
+    if key=='cash':
+     extra='Bank: '+financial_bank+'; Branch: Illustrative Branch '+str(idx)+'; Account holder: '+p['name']+'; Account no: DEMO-'+str(age)+'-000'+str(idx)+'-CASH; Currency: USD; NOT A REAL BANK ACCOUNT.'
+    elif key=='investments':
+     extra='Broker: Example Securities Custody (fictional); Account no: DEMO-BROKER-'+str(age)+'-00'+str(idx)+'; Owner: '+p['name']+'; Portfolio value: '+rm(value)+'.'
+    elif key=='retirement':
+     extra='Provider: Fictional Retirement Trust; Member account: DEMO-RET-'+str(age)+'-0'+str(idx)+'; Owner: '+p['name']+'; Balance: '+rm(value)+'.'
+    elif key=='privateInvestments':
+     extra='Company / partnership ID: DEMO-CO-'+str(age)+'-0'+str(idx)+'; Contract / ownership reference: '+ref+'; Ownership is not bank cash.'
+    elif key=='property':
+     extra='Fictional property title: DEMO-TITLE-'+str(age)+'-'+str(idx)+'; Location: Example District, Fictional State; Owner: '+p['name']+'.'
+    elif key=='vehicles':
+     extra='Registration no: DEMO-VEH-'+str(age)+'-'+str(idx)+'; Fictional registered owner: '+p['name']+'.'
+    elif key=='otherAssets':
+     extra='Custody / insurance: Imaginary Vault & Insurance Co.; Asset reference: '+ref+'.'
+    elif group is p['debts']:
+     extra='Creditor: '+financial_bank+'; Loan / card account: DEMO-LOAN-'+str(age)+'-00'+str(idx)+'-'+key.upper()+'; Borrower: '+p['name']+'; Balance owed: '+rm(value)+'; FICTIONAL.'
+    rr.append([name,rm(value),extra])
+   rr.append([title+' total',rm(sum(x[1] for x in items)),str(len(items))+' individually recorded items'])
+   story.append(tab(rr,[w*.28,w*.16,w*.56],4))
+ story.append(PageBreak());story.append(P('Financial Independence Planning Report','HeadingSample'))
  story.append(P('Financial Life - input assumptions','H2Sample'))
  inp=[['INPUT','VALUE','INPUT','VALUE'],
       ['Age now',str(age),'Plan to age','90'],
@@ -279,7 +293,8 @@ def create(p):
  story.append(tab([['AGE','NEW MONTHLY SPENDING','REASON']]+[[str(aa),rm(v),reason] for aa,v,reason in p['spendingChanges']],[w*.12,w*.3,w*.58],4))
  story.append(P('One-time money events','H2Sample'))
  story.append(tab([['AGE','DIRECTION','US$ AMOUNT','PURPOSE']]+[[str(aa),kind,rm(value),desc] for aa,kind,value,desc in p['events']],[w*.12,w*.20,w*.22,w*.46],4))
- story.append(P('3 x 3 sensitivity: spending x investment returns at age 90','H2Sample'))
+ story.append(P('Financial Life Simulator - 3 x 3','H2Sample'))
+ story.append(P('Nine spending / return scenarios for age 90: this is a demonstrative sensitivity table, not the verified MWS simulator.'))
  sensitivity=[['MONTHLY SPENDING','RETURNS -1pp','BASE RETURNS','RETURNS +1pp']]
  for factor,label in [(0.9,'10% below base'),(1.0,'Base spending'),(1.1,'10% above base')]:
   pp=dict(p);pp['spend']=p['spend']*factor;pp['retireSpend']=p['retireSpend']*factor
@@ -287,11 +302,28 @@ def create(p):
   sensitivity.append([label]+[project(pp,delta)[-1][-1] for delta in [-1,0,1]])
  story.append(tab(sensitivity,[w*.25]*4,4))
  story.append(P('Nine illustrative combinations of spending and annual returns. Values show cash + investments + retirement accounts at age 90, not total net worth. A zero end balance is not a guarantee of funding sufficiency.'))
- story.append(P('Annual Financial Life illustration through age 90','H2Sample'))
- story.append(P('These numbers illustrate the presentation only; they are not generated by the current MWS Financial Life calculation engine. Nominal USD, after hypothetical return / contribution / spending assumptions. Houses and vehicles are not counted as spendable funds.'))
- projections=[['AGE','INCOME / YEAR','SPEND / YEAR','RETIREMENT ADDITIONS','END CASH','END SHARES','END RETIREMENT','LIQUID + RETIREMENT']]
- projections+=project(p)
- story.append(tab(projections,[w*.055,w*.15,w*.15,w*.135,w*.12,w*.12,w*.115,w*.155],3))
+
+ story.append(PageBreak())
+ story.append(P('Financial Independence Planning Report','HeadingSample'))
+ story.append(P('Yearly balances to age 90','H2Sample'))
+ story.append(P('USD, hypothetical nominal values. Financial assets only.  Assumptions, not investment advice.'))
+ forecast=project(p)
+ cash0=sum(v for _,v in p['assets']['cash']);stock0=sum(v for _,v in p['assets']['investments']);ret0=sum(v for _,v in p['assets']['retirement'])
+ balances=[['AGE','OPENING FUNDS','CASH & SAVINGS','PUBLIC INVESTMENTS','RETIREMENT FUND','END ACCESSIBLE BALANCE']]
+ for record in forecast:
+  year_age=int(record[0]);cash=record[4];shares=record[5];retirement=record[6]
+  opening=rm(cash0+stock0+ret0) if year_age==age else forecast[year_age-age-1][7]
+  balances.append([str(year_age),opening,cash,shares,retirement,record[7]])
+ story.append(tab(balances,[w*.065,w*.185,w*.17,w*.18,w*.18,w*.22],4))
+ story.append(PageBreak())
+ story.append(P('Financial Independence Planning Report','HeadingSample'))
+ story.append(P('Yearly cash flow to age 90','H2Sample'))
+ cashflow=[['AGE','EARNED & PASSIVE INCOME','TOTAL SPENDING','RETIREMENT ADDITIONS','CLOSING LIQUID FUNDS','CLOSING TOTAL FUNDS']]
+ for record in forecast:
+  cashflow.append([record[0],record[1],record[2],record[3],record[4]+' + '+record[5],record[7]])
+ story.append(tab(cashflow,[w*.07,w*.21,w*.17,w*.175,w*.205,w*.17],4))
+ story.append(P('Financial values are illustrative and exclude property, vehicles and non-liquid holdings from funds available for spending.'))
+
  story.append(Spacer(1,14));story.append(P('Password-protected sharing','H2Sample'))
  story.append(P('This example is AES-256-encrypted using a public demo password. Real reports should have a different, private and unique password, provided separately to a trusted recipient. A recipient can still screenshot, print, copy or forward a report after unlocking.'))
  story.append(P('Offline design: core financial calculations and local reports work on the device. Google Play, exchange-rate refresh, web links and recipient apps are separate online services.'))
