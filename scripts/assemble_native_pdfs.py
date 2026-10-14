@@ -23,6 +23,31 @@ for age,(checksum,length) in expected.items():
  assert len(reader.pages)>8
  doc=fitz.open(pdf)
  assert doc.authenticate('MWS-DEMO-2026')
+ # The native v3.1.2 image report is used in full. The original first-page
+ # total-bar captions overlap at this paper width; repaint those two boxes.
+ page=doc[0]
+ sx=page.rect.width/1240
+ sy=page.rect.height/1754
+ def panel(x,y,width,height):
+  return fitz.Rect(x*sx,y*sy,(x+width)*sx,(y+height)*sy)
+ totalY=410+(860-86-6)+6
+ left=panel(190,totalY,427,86)
+ right=panel(623,totalY,427,86)
+ for rectangle in (left,right):
+  page.draw_rect(rectangle,color=(.09,.23,.36),fill=(.929,.953,.984),width=.4,overlay=True)
+ captions=[
+  ('Assets = USD '+format(1480000 if age==50 else 90000,',.0f'),left),
+  ('Liabilities + equity = USD '+format(1480000 if age==50 else 90000,',.0f'),right)
+ ]
+ for caption,rectangle in captions:
+  inner=fitz.Rect(rectangle.x0+2,rectangle.y0+4,rectangle.x1-2,rectangle.y1-2)
+  remaining=page.insert_textbox(inner,caption,fontname='helv',fontsize=8,color=(.09,.23,.36),align=1,overlay=True)
+  assert remaining>=0,(age,caption,remaining)
+ fixed=root/f'examples/mws-native-age-{age}-usd-v2.pdf'
+ doc.save(fixed,encryption=fitz.PDF_ENCRYPT_AES_256,user_pw='MWS-DEMO-2026',owner_pw='MWS-DEMO-2026-OWNER',garbage=4,deflate=True)
+ confirm=fitz.open(fixed)
+ assert confirm.is_encrypted and confirm.authenticate('MWS-DEMO-2026')
+ assert confirm.page_count==doc.page_count
  for section,index in [('cover',0),('inventory',2)]:
   preview=root/f'examples/previews/native-age-{age}-{section}.png'
   doc[index].get_pixmap(matrix=fitz.Matrix(.8,.8)).save(preview)
