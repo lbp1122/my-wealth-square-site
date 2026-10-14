@@ -33,43 +33,43 @@
   </select></label>
 </div></header>
 <main class="sample-wrap">
-  <section class="sample-hero"><div class="eyebrow">MY WEALTH SQUARE DEMONSTRATION</div>
+  <section class="sample-hero"><div class="eyebrow" data-k="sampleUsdBanner">Both fictional examples use USD (US$).</div>
     <h1 data-k="sampleTitle">Explore complete sample reports</h1>
     <p data-k="sampleDesc">Explore fictional balance sheets, inventories, progress and retirement forecasts.</p>
     <p data-k="sampleWhat">All names, references and figures are fictional.</p>
   </section>
   <div class="password-tip" role="note">
-    <div><strong>Public demonstration password</strong></div>
-    <div><span class="password-code" id="demoPassword">MWS-DEMO-2026</span><button id="copyPassword" type="button">Copy password</button></div>
+    <div><strong data-k="samplePasswordTitle">Demonstration PDF password</strong></div>
+    <div><span class="password-code" id="demoPassword">MWS-DEMO-2026</span><button id="copyPassword" type="button" data-k="sampleCopyPassword">Copy password</button></div>
     <p data-k="samplePassword">Enter the demo password when your PDF reader asks for it.</p>
   </div>
   <div class="samples-grid">
     <article class="sample-item">
-      <div class="kicker">50 YEARS OLD · FICTIONAL EXAMPLE</div>
-      <h2 data-k="sampleFifty">Age 50: a detailed wealth picture</h2>
-      <div class="sample-amount">RM3,299,000 net worth</div>
-      <p>21 asset holdings · 12 liability records · 2024–2026 progress · planning to age 90</p>
-      <div class="sample-actions"><a href="./examples/mws-demo-age-50.pdf" target="_blank" rel="noopener" class="report-open">Open PDF</a><a class="alt" href="./examples/mws-demo-age-50.pdf" download>Download</a></div>
+      <div class="kicker" data-k="sampleFiftyAge">AGE 50 · FICTIONAL</div>
+      <h2 data-k="sampleFifty">Age 50 — Sample report</h2>
+      <div class="sample-amount" data-k="sampleNetWorth50">US$3,299,000 net worth</div>
+      <p data-k="sampleMeta50">21 asset items · 12 liabilities · 2024–2026 progress · Projection to age 90</p>
+      <div class="sample-actions"><a href="./examples/mws-demo-age-50.pdf" target="_blank" rel="noopener" class="report-open" data-k="sampleOpenPdf">Open encrypted PDF</a><a class="alt" href="./examples/mws-demo-age-50.pdf" download data-k="sampleDownload">Download PDF</a></div>
     </article>
     <article class="sample-item">
-      <div class="kicker">25 YEARS OLD · FICTIONAL EXAMPLE</div>
-      <h2 data-k="sampleTwenty">Age 25: building financial foundations</h2>
-      <div class="sample-amount">RM43,950 net worth</div>
-      <p>8 asset holdings · 3 liability records · 2024–2026 progress · planning to age 90</p>
-      <div class="sample-actions"><a href="./examples/mws-demo-age-25.pdf" target="_blank" rel="noopener" class="report-open">Open PDF</a><a class="alt" href="./examples/mws-demo-age-25.pdf" download>Download</a></div>
+      <div class="kicker" data-k="sampleTwentyAge">AGE 25 · FICTIONAL</div>
+      <h2 data-k="sampleTwenty">Age 25 — Sample report</h2>
+      <div class="sample-amount" data-k="sampleNetWorth25">US$43,950 net worth</div>
+      <p data-k="sampleMeta25">8 asset items · 3 liabilities · 2024–2026 progress · Projection to age 90</p>
+      <div class="sample-actions"><a href="./examples/mws-demo-age-25.pdf" target="_blank" rel="noopener" class="report-open" data-k="sampleOpenPdf">Open encrypted PDF</a><a class="alt" href="./examples/mws-demo-age-25.pdf" download data-k="sampleDownload">Download PDF</a></div>
     </article>
   </div>
   <section class="sample-disclosure">
-    <p><strong>Important:</strong> Fictional demonstration reports prepared to illustrate My Wealth Square's report categories and local PDF password protection. Forecast figures use an illustrative simplified model rather than the app's verified Financial Life engine. Actual outputs depend on your data, assumptions, app release and user permissions.</p>
-    <p>Encrypted PDFs ask for a password in a compatible PDF reader; there is no website password account or financial-data upload. Some mobile browsers download the PDF rather than displaying a password dialog. Use an on-device PDF reader if needed. For real sensitive reports, use a unique private password and send it separately from the file.</p>
-    <p>No private data is needed to explore these examples. <a class="home-link" href="./index.html">Return to My Wealth Square</a> · <a href="./privacy.html">Privacy Policy</a></p>
+    <p data-k="sampleDisclaimer1">These are fictional educational demonstrations. The projections currently use a simplified illustration, not the app's verified Financial Life engine. They should not be represented as exact exports from the Android app.</p>
+    <p data-k="sampleDisclaimer2">These PDFs are encrypted. A compatible PDF reader asks for the password after you open or download the file. The website does not collect any password or financial figures. For your own reports, use a private password and share it separately.</p>
+    <p><a class="home-link" href="./index.html" data-k="sampleBack">Back to My Wealth Square</a> · <a href="./privacy.html" data-k="samplePrivacyLink">Privacy Policy</a></p>
   </section>
 </main>
 <footer><div class="wrap footer-row"><strong>My Wealth Square</strong><div><a href="./privacy.html">Privacy</a><a href="./terms.html">Terms</a><a href="./support.html">Support</a></div><span>© 2026 Looi Boon Ping</span></div></footer>
 <script src="./copy.js"></script><script src="./site.js?v=20261014"></script>
 <script>
 document.getElementById('copyPassword').addEventListener('click',async(event)=>{
-  try { await navigator.clipboard.writeText('MWS-DEMO-2026'); event.currentTarget.textContent='Copied'; }
+  try { await navigator.clipboard.writeText('MWS-DEMO-2026'); event.currentTarget.textContent='✓'; }
   catch (_) { event.currentTarget.textContent='Select and copy MWS-DEMO-2026'; }
 });
 </script>
