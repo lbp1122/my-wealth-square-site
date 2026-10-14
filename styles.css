@@ -113,7 +113,7 @@ html[data-input-mode="pointer"] .language select:focus-visible{outline:none;box-
     box-sizing:border-box;
     min-width:0;
     max-width:none;
-    width:clamp(96px,33vw,160px);
+    width:clamp(126px,35vw,160px);
     min-height:40px;
     padding:8px 21px 8px 8px;
     font-size:clamp(11px,3vw,13px);
