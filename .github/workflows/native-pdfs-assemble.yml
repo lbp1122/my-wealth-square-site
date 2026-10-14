@@ -17,8 +17,28 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install --quiet pypdf==5.9.0 PyMuPDF==1.26.4
-      - run: python scripts/assemble_native_pdfs.py
+      - name: Assemble with diagnostics
+        id: pdfcheck
+        shell: bash
+        run: |
+          set +e
+          python scripts/assemble_native_pdfs.py > native-assemble-result.txt 2>&1
+          result=$?
+          cat native-assemble-result.txt
+          echo "exitcode=$result" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Save failure diagnostic for repair
+        if: steps.pdfcheck.outputs.exitcode != '0'
+        run: |
+          mkdir -p docs
+          cp native-assemble-result.txt docs/native-assemble-diagnostic.txt
+          git config user.name 'mws-report-diagnostics'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/native-assemble-diagnostic.txt
+          git commit -m 'ci(site): record native PDF assembly diagnostic'
+          git push
       - name: Publish encrypted PDF reports
+        if: steps.pdfcheck.outputs.exitcode == '0'
         run: |
           git config user.name 'mws-report-publisher'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
