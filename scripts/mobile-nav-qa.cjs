@@ -23,8 +23,8 @@ const widths=[320,360,393];
         label:text,visibleWidth:measure.measureText(text).width};
      });
     });
-    if(nav.length!==5)failures.push(width+' '+lang+': expected five navigation items');
-    if(nav.length===5){
+    if(nav.length!==4)failures.push(width+' '+lang+': expected four navigation items');
+    if(nav.length===4){
      const maxTop=Math.max(...nav.map(x=>x.top)),minTop=Math.min(...nav.map(x=>x.top));
      if(maxTop-minTop>1)failures.push(width+' '+lang+': navigation wrapped into multiple rows');
      for(let i=0;i<nav.length;i++){
@@ -41,5 +41,5 @@ const widths=[320,360,393];
   }
  }finally{await browser.close();}
  if(failures.length){console.error(failures.join('\n'));process.exit(1);}
- console.log('PASS: five mobile links fit one row and are not clipped across eight languages at 320, 360 and 393px');
+ console.log('PASS: four mobile links fit one row and are not clipped across eight languages at 320, 360 and 393px');
 })().catch(e=>{console.error(e);process.exit(1);});
