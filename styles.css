@@ -173,3 +173,17 @@ html[data-input-mode="pointer"] .language select:focus-visible{outline:none;box-
 #features .legacy-disclaimer{font-size:13px;line-height:1.65;color:#c7d8ed;margin-top:24px;margin-bottom:0;border-top:1px solid #53759b;padding-top:18px}
 @media(max-width:820px){#features .legacy-cards{grid-template-columns:1fr;gap:12px}#features .legacy-cards article{padding:20px}}
 @media(max-width:420px){#features .legacy-panel{margin-top:28px;padding:20px}#features .legacy-panel-intro>p{font-size:16px}}
+
+/* Both platforms stay visible at every screen size. Store artwork is unmodified. */
+.store-badges{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:14px 0}
+.store-badge{display:flex;align-items:center;justify-content:center;width:152px;height:51px;flex:0 0 152px;border-radius:7px}
+.store-badge img{display:block;max-width:none;object-fit:contain}
+.apple-badge img{width:152px;height:51px}
+.google-badge img{width:180px;height:auto}
+.store-badge:hover{filter:brightness(1.12)}
+.platform-availability{font-weight:700;font-size:18px;margin:26px 0 14px}
+.platform-note{font-size:13px;line-height:1.65;max-width:540px;margin:14px 0;color:inherit;opacity:.86}
+.learn-link{display:inline-block;margin:8px 0;font-size:15px}
+.download-stores{flex:0 1 360px;min-width:0}
+.download-box{gap:28px;flex-wrap:wrap}
+@media(max-width:400px){.store-badges{gap:10px}.store-badge{width:136px;height:46px;flex-basis:136px}.apple-badge img{width:136px;height:46px}.google-badge img{width:161px}.platform-availability{font-size:16px}}
