@@ -187,3 +187,5 @@ html[data-input-mode="pointer"] .language select:focus-visible{outline:none;box-
 .download-stores{flex:0 1 360px;min-width:0}
 .download-box{gap:28px;flex-wrap:wrap}
 @media(max-width:400px){.store-badges{gap:10px}.store-badge{width:136px;height:46px;flex-basis:136px}.apple-badge img{width:136px;height:46px}.google-badge img{width:161px}.platform-availability{font-size:16px}}
+
+.hero .platform-availability{color:#fff}
