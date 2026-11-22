@@ -20,6 +20,12 @@
     .password-code{font-size:21px;letter-spacing:0.5px;font-weight:800;color:#173654}
     .password-tip button{margin-left:12px;padding:8px 12px;border-radius:8px;border:1px solid #173654;background:white;color:#173654;cursor:pointer}
     .native-report-preview{display:block;max-height:440px;width:100%;height:auto;object-fit:contain;object-position:top center;background:#f1f5f9;border:1px solid #dce4ed;border-radius:8px;margin:14px 0}.sample-disclosure{font-size:13px;color:#53677b;line-height:1.7}
+    .sample-store-panel{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;padding:20px 24px;margin:20px 0 24px;border:1px solid #dce4ed;border-radius:16px;background:#fff}
+    .sample-store-panel p{margin:4px 0 0;color:#53677b;line-height:1.5}
+    .sample-store-panel .store-badges{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+    .sample-store-panel .store-badge{display:inline-flex;align-items:center;justify-content:center;min-height:54px}
+    .sample-store-panel .store-badge img{display:block;max-width:100%;height:auto}
+    @media(max-width:700px){.sample-store-panel{padding:16px}.sample-store-panel .store-badges{width:100%;gap:8px}.sample-store-panel .store-badge{flex:1;min-width:125px}.sample-store-panel .store-badge img{max-height:56px;width:auto}}
     .sample-frame{width:100%;height:680px;border:1px solid #dce4ed;border-radius:14px}
     #viewerCard{display:none;margin-top:24px}
     @media(max-width:700px){.samples-grid{grid-template-columns:1fr}.sample-frame{height:460px}.password-tip button{display:block;margin:12px 0 0}}
@@ -28,7 +34,7 @@
 <body>
 <header class="topbar"><div class="wrap nav">
   <a href="./index.html" class="brand home-link"><img src="./assets/mws-approved-logo.jpg" alt="" width="48" height="48"><span>My Wealth Square</span></a>
-  <a class="nav-get-app" href="https://play.google.com/store/apps/details?id=com.lbp.balancesheetsquare" rel="noopener" data-k="headerGetApp">Get app</a>
+  <a class="nav-get-app" href="#download" rel="noopener" data-k="headerGetApp">Get app</a>
   <label class="language"><span class="sr-only">Language</span><select id="language" aria-label="Language">
     <option value="en">English</option><option value="bm">Bahasa Melayu</option><option value="zh">简体中文</option><option value="zh-TW">繁體中文</option><option value="th">ไทย</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="vi">Tiếng Việt</option>
   </select></label>
@@ -38,6 +44,13 @@
     <h1 data-k="sampleTitle">Explore complete sample reports</h1>
     <p data-k="sampleDesc">Explore fictional balance sheets, inventories, progress and retirement forecasts.</p>
     <p data-k="sampleWhat">All names, references and figures are fictional.</p>
+  </section>
+  <section class="sample-store-panel" id="download" aria-label="Download My Wealth Square">
+    <div><strong data-k="platformAvailability">Available on iPhone, iPad and Android.</strong><p data-k="platformNote">Free to download. Additional features require Full access.</p></div>
+    <div class="store-badges">
+      <a class="store-badge apple-badge" href="https://apps.apple.com/app/my-wealth-square/id6827556663" target="_blank" rel="noopener noreferrer" aria-label="Download My Wealth Square on the App Store"><img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" width="152" height="51"></a>
+      <a class="store-badge google-badge" href="https://play.google.com/store/apps/details?id=com.lbp.balancesheetsquare" target="_blank" rel="noopener noreferrer" aria-label="Get My Wealth Square on Google Play"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" width="180" height="70"></a>
+    </div>
   </section>
   <p class="sample-language-notice"><span lang="en">Sample PDF reports are all in English and USD, while your actual PDF report follows the language and currency selected in your My Wealth Square app.</span><span class="sample-translated-notice" data-k="sampleUsdAndLanguageNotice" hidden></span></p>
   <div class="password-tip" role="note">
