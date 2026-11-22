@@ -73,8 +73,7 @@ def background(page:fitz.Page,area:fitz.Rect):
     for y in range(1,pix.height-1,2):
         for x in range(1,pix.width-1,2):
             r,g,b=pix.pixel(x,y)[:3]
-            if max(r,g,b)<185:
-                candidates.append((r//4,g//4,b//4))
+            candidates.append((r//4,g//4,b//4))
     if not candidates:
         raise ValueError('No suitable filled background pixels in '+str(area))
     key=Counter(candidates).most_common(1)[0][0]
