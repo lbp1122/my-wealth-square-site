@@ -31,6 +31,8 @@ try {
         localizedNotice:document.querySelector('.sample-translated-notice')?.textContent||'',
         localizedHidden:document.querySelector('.sample-translated-notice')?.hidden,
         legacyCards:Array.from(document.querySelectorAll('#legacy .legacy-cards article')).map(a=>({number:a.querySelector('.legacy-card-number')?.textContent.trim(),title:a.querySelector('h4')?.textContent.trim(),body:a.querySelector('p')?.textContent.trim()})),
+        multiFeature:{title:document.querySelector('[data-k="fMultiTitle"]')?.textContent||'',body:document.querySelector('[data-k="fMultiBody"]')?.textContent||''},
+        multiExpected:(typeof copy!=='undefined'&&copy[document.getElementById('language')?.value])?{title:copy[document.getElementById('language').value].fMultiTitle,body:copy[document.getElementById('language').value].fMultiBody}:null,
         legacyExpected:(typeof copy!=='undefined'&&copy[document.getElementById('language')?.value])? {title:copy[document.getElementById('language').value].legacyDistributionTitle,body:copy[document.getElementById('language').value].legacyDistributionBody,prepare:copy[document.getElementById('language').value].legacyPrepareBody}:null,
         topnav: Array.from(document.querySelectorAll('.links a')).map(a=>{const r=a.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom}})};
     });
@@ -47,6 +49,7 @@ try {
      if(bad) errors.push('nav overflow '+lang+' '+width);
     }
     if(file==='index.html') {
+      if(!info.multiExpected || !info.multiFeature.title || info.multiFeature.title!==info.multiExpected.title || info.multiFeature.body!==info.multiExpected.body) errors.push(lang+' '+width+' multi-profile feature translation missing or inconsistent');
       if(info.legacyCards.length!==2) errors.push(lang+' '+width+' legacy panel expected 2 cards, got '+info.legacyCards.length);
       else {
         if(info.legacyCards[0].number!=='01'||info.legacyCards[1].number!=='02')errors.push(lang+' '+width+' legacy numbering incorrect');
