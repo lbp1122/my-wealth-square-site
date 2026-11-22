@@ -1,0 +1,40 @@
+name: Inspect native sample report page map
+on:
+  push:
+    branches: [fix/financial-life-samples-dual-store-20261122]
+    paths:
+      - '.github/one-shot/inspect-native-financial-life.trigger'
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Inspect encrypted native PDF page content and geometry
+        run: |
+          python -m pip install -q PyMuPDF==1.26.4
+          python - <<'PY'
+          import fitz
+          from pathlib import Path
+          for age in (50,25):
+            p=Path(f'examples/mws-native-age-{age}-usd-20261014-v2.pdf')
+            doc=fitz.open(p)
+            assert doc.is_encrypted and doc.authenticate('MWS-DEMO-2026')
+            print('REPORT',age,'pages',doc.page_count,'bytes',p.stat().st_size,flush=True)
+            for i,page in enumerate(doc):
+              words=page.get_text('words')
+              txt=page.get_text('text').strip().replace('\\n',' ')
+              images=len(page.get_images(full=True))
+              pix=page.get_pixmap(matrix=fitz.Matrix(0.2,0.2),colorspace=fitz.csRGB,alpha=False)
+              w,h=pix.width,pix.height
+              spots=[]
+              for x,y in [(0.1,0.025),(0.5,0.025),(0.1,0.1),(0.5,0.1),(0.1,0.17),(0.5,0.17),(0.1,0.25),(0.5,0.25)]:
+                xx=min(w-1,int(w*x));yy=min(h-1,int(h*y));off=(yy*w+xx)*3;spots.append('#'+''.join(f'{v:02x}' for v in pix.samples[off:off+3]))
+              print('PAGE',i+1, 'dims',tuple(round(v,1) for v in(page.rect.width,page.rect.height)),
+                    'words',len(words),'images',images,'text',repr(txt[:130]),'spots',spots,flush=True)
+          PY
