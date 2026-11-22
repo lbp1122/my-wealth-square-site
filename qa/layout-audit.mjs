@@ -30,6 +30,8 @@ try {
         englishNotice:document.querySelector('.sample-note span[lang="en"], .sample-language-notice span[lang="en"]')?.textContent||'',
         localizedNotice:document.querySelector('.sample-translated-notice')?.textContent||'',
         localizedHidden:document.querySelector('.sample-translated-notice')?.hidden,
+        legacyCards:Array.from(document.querySelectorAll('#legacy .legacy-cards article')).map(a=>({number:a.querySelector('.legacy-card-number')?.textContent.trim(),title:a.querySelector('h4')?.textContent.trim(),body:a.querySelector('p')?.textContent.trim()})),
+        legacyExpected:(typeof copy!=='undefined'&&copy[document.getElementById('language')?.value])? {title:copy[document.getElementById('language').value].legacyDistributionTitle,body:copy[document.getElementById('language').value].legacyDistributionBody,prepare:copy[document.getElementById('language').value].legacyPrepareBody}:null,
         topnav: Array.from(document.querySelectorAll('.links a')).map(a=>{const r=a.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom}})};
     });
     if (info.width > width+2 || info.offending.length) errors.push(file+' '+lang+' '+width+'px overflow: '+JSON.stringify(info).slice(0,550));
@@ -43,6 +45,14 @@ try {
     if (file==='index.html' && width<450 && info.topnav.length===4) {
      const bad=info.topnav.some(r=>r.right>width+2||r.left< -2);
      if(bad) errors.push('nav overflow '+lang+' '+width);
+    }
+    if(file==='index.html') {
+      if(info.legacyCards.length!==2) errors.push(lang+' '+width+' legacy panel expected 2 cards, got '+info.legacyCards.length);
+      else {
+        if(info.legacyCards[0].number!=='01'||info.legacyCards[1].number!=='02')errors.push(lang+' '+width+' legacy numbering incorrect');
+        if(!info.legacyExpected || info.legacyCards[0].title!==info.legacyExpected.title || info.legacyCards[0].body!==info.legacyExpected.body) errors.push(lang+' '+width+' estate distribution translation mismatch');
+        if(info.legacyCards[1].body!==info.legacyExpected?.prepare) errors.push(lang+' '+width+' trusted-person translation mismatch');
+      }
     }
     if(lang==='bm' && width===360) await page.screenshot({path:join('qa','screenshots',file+'-bm-360.png'),fullPage:true});
     total++;
