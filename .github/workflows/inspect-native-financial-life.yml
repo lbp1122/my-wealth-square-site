@@ -1,9 +1,9 @@
-name: Inspect native sample report page map
+name: Inspect text drawn into native PDF page images
 on:
   push:
     branches: [fix/financial-life-samples-dual-store-20261122]
     paths:
-      - '.github/one-shot/inspect-native-financial-life.trigger'
+      - '.github/one-shot/inspect-native-financial-life-ocr.trigger'
 permissions:
   contents: read
 jobs:
@@ -15,26 +15,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Inspect encrypted native PDF page content and geometry
+      - name: Identify financial planning headers in image-based sample PDFs
         run: |
           python -m pip install -q PyMuPDF==1.26.4
+          if ! command -v tesseract >/dev/null; then sudo apt-get update -qq && sudo apt-get install -y -qq tesseract-ocr >/dev/null; fi
           python - <<'PY'
-          import fitz
+          import fitz,subprocess
           from pathlib import Path
-          for age in (50,25):
-            p=Path(f'examples/mws-native-age-{age}-usd-20261014-v2.pdf')
-            doc=fitz.open(p)
-            assert doc.is_encrypted and doc.authenticate('MWS-DEMO-2026')
-            print('REPORT',age,'pages',doc.page_count,'bytes',p.stat().st_size,flush=True)
-            for i,page in enumerate(doc):
-              words=page.get_text('words')
-              txt=page.get_text('text').strip().replace('\\n',' ')
-              images=len(page.get_images(full=True))
-              pix=page.get_pixmap(matrix=fitz.Matrix(0.2,0.2),colorspace=fitz.csRGB,alpha=False)
-              w,h=pix.width,pix.height
-              spots=[]
-              for x,y in [(0.1,0.025),(0.5,0.025),(0.1,0.1),(0.5,0.1),(0.1,0.17),(0.5,0.17),(0.1,0.25),(0.5,0.25)]:
-                xx=min(w-1,int(w*x));yy=min(h-1,int(h*y));off=(yy*w+xx)*3;spots.append('#'+''.join(f'{v:02x}' for v in pix.samples[off:off+3]))
-              print('PAGE',i+1, 'dims',tuple(round(v,1) for v in(page.rect.width,page.rect.height)),
-                    'words',len(words),'images',images,'text',repr(txt[:130]),'spots',spots,flush=True)
+          for age,target in [(50,10),(25,5)]:
+            doc=fitz.open(f'examples/mws-native-age-{age}-usd-20261014-v2.pdf')
+            assert doc.authenticate('MWS-DEMO-2026')
+            print('REPORT',age,'PAGE_COUNT',doc.page_count,flush=True)
+            for i,p in enumerate(doc):
+              clip=fitz.Rect(0,0,p.rect.width,min(88,p.rect.height))
+              png=p.get_pixmap(matrix=fitz.Matrix(2,2),clip=clip,alpha=False).tobytes('png')
+              result=subprocess.run(['tesseract','stdin','stdout','--psm','6'],input=png,capture_output=True,check=True)
+              title=' '.join(result.stdout.decode(errors='replace').split())
+              print('TITLE',age,i+1,repr(title[:170]),flush=True)
+              if i==target:
+                clip=fitz.Rect(25,98,568,195)
+                png=p.get_pixmap(matrix=fitz.Matrix(3,3),clip=clip,alpha=False).tobytes('png')
+                result=subprocess.run(['tesseract','stdin','stdout','--psm','6'],input=png,capture_output=True,check=True)
+                print('SUMMARY',age,i+1,repr(' '.join(result.stdout.decode(errors='replace').split())),flush=True)
           PY
