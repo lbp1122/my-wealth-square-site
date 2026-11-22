@@ -165,7 +165,7 @@ html[data-input-mode="pointer"] .language select:focus-visible{outline:none;box-
 #features .legacy-panel-intro{max-width:880px}
 #features .legacy-panel h3{font-size:clamp(24px,3vw,35px);margin:12px 0 16px;line-height:1.22;color:#fff}
 #features .legacy-panel-intro>p{font-size:17px;line-height:1.7}
-#features .legacy-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:27px}
+#features .legacy-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:27px}
 #features .legacy-cards article{padding:22px;border:1px solid #54779d;border-radius:12px;background:#0d3058}
 #features .legacy-card-number{font-size:13px;color:var(--gold);font-weight:750;letter-spacing:1px}
 #features .legacy-cards h4{font-size:19px;line-height:1.3;margin:10px 0 10px;color:white}
